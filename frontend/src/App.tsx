@@ -3,23 +3,41 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+    const socket = io();
+    let messages: any[] = []
+    
+    const submitForm = (event: any) => {
+      event.preventDefault();
+      if (event.target.value) {
+          socket.emit('chat message', event.target.value);
+          event.target.value = '';
+      }
+    }
+
+    socket.on('chat message', msg: any => {
+      const item = document.createElement('li');
+      item.textContent = msg;
+      messages = messages.concat(msg)
+      window.scrollTo(0, document.body.scrollHeight);
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+  <div>
+    <ul>
+      {
+        messages.map(message => 
+          <li>message
+
+          </li>)
+      }
+    </ul>
+    <form onSubmit={submitForm}>
+      <input id="input"/><button>Send</button>
+    </form>
+
+    
+  </div>
   );
 }
 
