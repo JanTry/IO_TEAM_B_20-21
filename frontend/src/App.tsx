@@ -3,24 +3,36 @@ import "./App.css";
 
 import socketIOClient from "socket.io-client";
 
-const ENDPOINT = "http://127.0.0.1:4001";
+const ENDPOINT = "http://localhost:3000";
 
 function App() {
   const [response, setResponse] = useState("");
   const socket = socketIOClient(ENDPOINT);
 
-  useEffect(() => {
-    socket.on("chat message", (data:any) => {
-      setResponse(data);
-    });
-  }, [socket]);
+  // useEffect(() => {
+  //   console.log("BEFORE");
+  //   socket.on("chat message", (data:any) => {
+  //     setResponse(data);
+  //     console.log("IN CALLBACK");
+      
+  //   });
+  //   console.log("AFTER");
+  // }, [socket]);
 
+  socket.on("chat message", (data: any) => {
+    setResponse(data);
+    console.log("IN CALLBACK");
+  });
 
-  const submitForm = (event: any) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
-    if (event.target.value) {
+    console.log(event.target.message.value);
+    if (event.target.message.value) {
+        console.log(`wyslano: ${event.target.message.value}`);   
         socket.emit('chat message', event.target.value);
-        event.target.value = '';
+        console.log("AFTER EMIT");
+        
+        event.target.message.value = '';
     }
   }
 
@@ -34,6 +46,9 @@ function App() {
   return (
     <div>
       <p>{response}</p>
+      <form onSubmit={handleSubmit}>
+        <input name="message"/><button>sned</button>
+      </form>
     </div>
   );
 }
