@@ -1,8 +1,10 @@
-const mongoose = require('mongoose')
+import mongoose = require("mongoose");
+import * as dotenv from 'dotenv'
+dotenv.config()
 
-const connect = (databaseName='IO_TEAM_B_20_21', address='127.0.0.1', port='27017') => {
+export const connect = (databaseName=process.env.DATABASE_NAME, address=process.env.DATABASE_ADDRESS, port=process.env.DATABASE_PORT) => {
     try{
-        const url = 'mongodb://'+address+":"+port+"/"+databaseName
+        const url = `mongodb://${address}:${port}/${databaseName}`
         mongoose.connect(url,{
             useNewUrlParser: true,
             useCreateIndex: true,
@@ -14,7 +16,7 @@ const connect = (databaseName='IO_TEAM_B_20_21', address='127.0.0.1', port='2701
     }
 }
 
-const disconnect = () => {
+export const disconnect = () => {
     try{
         mongoose.disconnect()
     } catch (error) {
@@ -22,5 +24,3 @@ const disconnect = () => {
     }
 }
 
-
-module.exports = {connect, disconnect}

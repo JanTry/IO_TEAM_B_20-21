@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import * as mongoose from 'mongoose'
 
 const messageSchema = new mongoose.Schema({
     sender_name: {
@@ -9,16 +9,14 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    date : { 
-        type: Date, 
-        default: Date.now 
+    date : {
+        type: Date,
+        default: Date.now
     }
-}, { 
+}, {
     collection: 'messages'
 })
 
 
-const Message = mongoose.model('Message', messageSchema)
+export const Message = mongoose.model('Message', messageSchema)
 
-
-module.exports = Message
