@@ -34,7 +34,7 @@ function App() {
       }
       </ul>
       <form id="form" onSubmit={handleSubmit}>
-        <input id="input" name="message"/><button>sned</button>
+        <input id="input" name="message"/><button>send</button>
       </form>
     </div>
   );
