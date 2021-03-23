@@ -1,51 +1,38 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-
 import socketIOClient from "socket.io-client";
 
-const ENDPOINT = "http://localhost:3000";
+const socket = socketIOClient('http://localhost:4000');
 
 function App() {
-  const [response, setResponse] = useState("");
-  const socket = socketIOClient(ENDPOINT);
+  const [messages, setMessages] = useState([]);
 
-  // useEffect(() => {
-  //   console.log("BEFORE");
-  //   socket.on("chat message", (data:any) => {
-  //     setResponse(data);
-  //     console.log("IN CALLBACK");
-      
-  //   });
-  //   console.log("AFTER");
-  // }, [socket]);
-
-  socket.on("chat message", (data: any) => {
-    setResponse(data);
-    console.log("IN CALLBACK");
-  });
+  useEffect(() => {
+    socket.on("broadcast-message", (message: any) => {
+      setMessages(messages.concat(message));
+      console.log(message);
+    });
+  }, [messages]);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    console.log(event.target.message.value);
     if (event.target.message.value) {
-        console.log(`wyslano: ${event.target.message.value}`);   
-        socket.emit('chat message', event.target.value);
-        console.log("AFTER EMIT");
-        
+      console.log(`sendig ${event.target.message.value}`);
+      
+        socket.emit('chat-message', event.target.message.value);       
         event.target.message.value = '';
     }
   }
 
-  // socket.on('chat message', msg: any) => {
-  //   const item = document.createElement('li');
-  //   item.textContent = msg;
-  //   messages = messages.concat(msg)
-  //   window.scrollTo(0, document.body.scrollHeight);
-  // });
-
   return (
     <div>
-      <p>{response}</p>
+      <ul>
+      {
+        messages.map((message, i) =>
+          <li key={i}>{message}</li>
+        )
+      }
+      </ul>
       <form onSubmit={handleSubmit}>
         <input name="message"/><button>sned</button>
       </form>
