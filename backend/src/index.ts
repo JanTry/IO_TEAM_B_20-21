@@ -13,11 +13,6 @@ const io = new Server(httpServer, {
 
 app.use(cors())
 
-app.get('/', (req, res) => {
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.sendFile(__dirname + '/static/chat.html');
-});
-
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.broadcast.emit('hi');

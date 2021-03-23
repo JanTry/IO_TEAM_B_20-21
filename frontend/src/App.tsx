@@ -10,14 +10,14 @@ function App() {
   useEffect(() => {
     socket.on("broadcast-message", (message: any) => {
       setMessages(messages.concat(message));
-      console.log(message);
+      console.log(`received message: ${message}`);
     });
   }, [messages]);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (event.target.message.value) {
-      console.log(`sendig ${event.target.message.value}`);
+      console.log(`sendig message: ${event.target.message.value}`);
       
         socket.emit('chat-message', event.target.message.value);       
         event.target.message.value = '';
@@ -26,15 +26,15 @@ function App() {
 
   return (
     <div>
-      <ul>
+      <ul id="messages">
       {
         messages.map((message, i) =>
           <li key={i}>{message}</li>
         )
       }
       </ul>
-      <form onSubmit={handleSubmit}>
-        <input name="message"/><button>sned</button>
+      <form id="form" onSubmit={handleSubmit}>
+        <input id="input" name="message"/><button>sned</button>
       </form>
     </div>
   );
