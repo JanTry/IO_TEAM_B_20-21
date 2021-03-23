@@ -2,7 +2,11 @@ import express from "express";
 import http from "http";
 import {Server} from "socket.io";
 import cors from 'cors';
+import dotenv  from "dotenv"
 
+dotenv.config()
+
+const PORT = process.env.PORT || 4000
 const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
@@ -26,6 +30,6 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(4000, () => {
-  console.log('listening on: 4000');
+httpServer.listen(PORT, () => {
+  console.log(`listening on port ${PORT}`);
 });
