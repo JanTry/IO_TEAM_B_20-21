@@ -10,3 +10,9 @@
 * `npm run start` - build typescript files and starts node js server
 * `npm run quick` - starts node js server without compiling typescript sources
 * `npm run dev:server` - starts dev server in watch mode
+
+# How to start database:
+
+* install and run MongoDB Community Server - https://www.mongodb.com/try/download/community
+* `npm run database` - establish MongoDB database connection
+
