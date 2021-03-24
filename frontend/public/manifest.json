@@ -1,0 +1,8 @@
+{
+  "short_name": "Software Engineering Project",
+  "name": "Software Engineering Project aimed at increasing student activity during lectures",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
