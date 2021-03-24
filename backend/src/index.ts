@@ -1,29 +1,35 @@
 import express from "express";
 import http from "http";
 import {Server} from "socket.io";
+import cors from 'cors';
+import dotenv  from "dotenv"
 
+dotenv.config()
+
+const PORT = process.env.PORT || 4000
 const app = express();
 const httpServer = http.createServer(app);
-const io = new Server(httpServer);
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/static/chat.html');
+const io = new Server(httpServer, {
+  cors: {
+    "origin": "*",
+  }
 });
+
+app.use(cors())
 
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.broadcast.emit('hi');
 
+  socket.on('chat-message', (message) => {
+    io.emit('broadcast-message', message)
+  });
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
-
-  socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
-    io.emit('chat message', msg);
-  });
 });
 
-httpServer.listen(3000, () => {
-  console.log('listening on *:3000');
+httpServer.listen(PORT, () => {
+  console.log(`listening on port ${PORT}`);
 });
