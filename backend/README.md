@@ -4,6 +4,12 @@
 * open Command Palette and serach for the `TSLint: Manage workspace library execution"` then select `enable workspace library execution`
 * be happy with tslint errors showing not only during compilation
 
+
+# Start db & api containers
+```
+docker-compose up -d
+```
+
 # How to start:
 
 * `npm run build` - build typescript files
