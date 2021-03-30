@@ -1,25 +1,24 @@
-import { useState, useEffect } from 'react';
-import socketIOClient from "socket.io-client";
-import './Chat.css';
-
-const socket = socketIOClient('http://localhost:4000');
+import { useState, useEffect, useRef } from 'react';
+import io from "socket.io-client";
+import './styles/Chat.css';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
 
+  const socket: any = useRef()
+
   useEffect(() => {
-    socket.on("broadcast-message", (message: any) => {
-      setMessages(messages.concat(message));
-      console.log(`received message: ${message}`);
-    });
-  }, [messages]);
+    socket.current = io.connect("http://localhost:4000")
+    socket.current.on("broadcast-message", (message: any) => {
+      setMessages(messages.concat(message))
+    })
+    return () => socket.current.disconnect()
+  }, [messages])
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (event.target.message.value) {
-      console.log(`sendig message: ${event.target.message.value}`);
-
-      socket.emit('chat-message', event.target.message.value);
+      socket.current.emit('chat-message', event.target.message.value);
       event.target.message.value = '';
     }
   }
