@@ -18,7 +18,6 @@ docker-compose up -d
 * `npm run dev:server` - starts dev server in watch mode
 
 # How to start database:
-
-* install and run MongoDB Community Server - https://www.mongodb.com/try/download/community
-* `npm run database` - establish MongoDB database connection
-
+```
+docker-compose up -d mongo
+```
