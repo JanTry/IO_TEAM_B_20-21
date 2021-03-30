@@ -3,7 +3,6 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
     container_name: io_team_b_backend
     command: npm run start
     volumes:
@@ -15,6 +14,8 @@ services:
       - mongo
     links:
       - mongo
+    networks:
+      - app-network
   mongo:
     container_name: io_team_b_mongo
     image: mongo:latest
@@ -25,7 +26,6 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     container_name: io_team_b_frontend
     command: npm run start
     links:
@@ -37,7 +37,6 @@ services:
       - backend
     ports:
       - '3000:3000'
-
     networks:
       - app-network
 
