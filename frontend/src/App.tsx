@@ -1,42 +1,21 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import socketIOClient from "socket.io-client";
+import Entry from './components/Entry';
+import LecturerLogin from './components/LecturerLogin';
+import StudentLogin from './components/StudentLogin';
+import StudentRegistration from './components/StudentRegistration';
+import StudentDashboard from './components/StudentDashboard';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-const socket = socketIOClient('http://localhost:4000');
-
-function App() {
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    socket.on("broadcast-message", (message: any) => {
-      setMessages(messages.concat(message));
-      console.log(`received message: ${message}`);
-    });
-  }, [messages]);
-
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    if (event.target.message.value) {
-      console.log(`sendig message: ${event.target.message.value}`);
-      
-        socket.emit('chat-message', event.target.message.value);       
-        event.target.message.value = '';
-    }
-  }
-
+const App = () => {
   return (
-    <div>
-      <ul id="messages">
-      {
-        messages.map((message, i) =>
-          <li key={i}>{message}</li>
-        )
-      }
-      </ul>
-      <form id="form" onSubmit={handleSubmit}>
-        <input id="input" name="message"/><button>send</button>
-      </form>
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Entry} />
+        <Route exact path="/login/lecturer" component={LecturerLogin} />
+        <Route exact path="/login/student" component={StudentLogin} />
+        <Route exact path="/register/student" component={StudentRegistration} />
+        <Route exact path="/student/dashboard" component={StudentDashboard} />
+      </Switch>
+    </Router>
   );
 }
 
