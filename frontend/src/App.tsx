@@ -1,7 +1,6 @@
 import Entry from './components/Entry';
-import LecturerLogin from './components/LecturerLogin';
-import StudentLogin from './components/StudentLogin';
-import StudentRegistration from './components/StudentRegistration';
+import LoginForm from './components/LoginForm';
+import RegistrationForm from './components/RegistrationForm';
 import StudentDashboard from './components/StudentDashboard';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
@@ -10,9 +9,13 @@ const App = () => {
     <Router>
       <Switch>
         <Route exact path="/" component={Entry} />
-        <Route exact path="/login/lecturer" component={LecturerLogin} />
-        <Route exact path="/login/student" component={StudentLogin} />
-        <Route exact path="/register/student" component={StudentRegistration} />
+        <Route exact path="/login/lecturer">
+          <LoginForm isLecturer={true} />
+        </Route>
+        <Route exact path="/login/student">
+          <LoginForm isLecturer={false} />
+        </Route>
+        <Route exact path="/register/student" component={RegistrationForm} />
         <Route exact path="/student/dashboard" component={StudentDashboard} />
       </Switch>
     </Router>
