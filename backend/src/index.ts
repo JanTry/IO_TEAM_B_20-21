@@ -2,7 +2,12 @@ import express from "express";
 import http from "http";
 import {Server} from "socket.io";
 import cors from 'cors';
-import dotenv  from "dotenv"
+import dotenv  from "dotenv";
+import * as db from './database/dbUtils';
+import healthz from "./routes/healthz";
+
+
+db.connect()
 
 dotenv.config()
 
@@ -15,7 +20,9 @@ const io = new Server(httpServer, {
   }
 });
 
+
 app.use(cors())
+app.use('/healthz', healthz)
 
 io.on('connection', (socket) => {
   console.log('a user connected');

@@ -1,0 +1,33 @@
+version: '3.9'
+services:
+  backend:
+    build: .
+    container_name: io_team_b_backend
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '${PORT}:${PORT}'
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    networks:
+      - app-network
+  mongo:
+    container_name: io_team_b_mongo
+    image: mongo:latest
+    ports:
+      - '${DATABASE_PORT}:${DATABASE_PORT}'
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  data-volume:
+  node_modules:
+  web-root:
+    driver: local
