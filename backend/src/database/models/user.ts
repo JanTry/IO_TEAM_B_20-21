@@ -1,9 +1,9 @@
-import * as mongoose from 'mongoose'
+import * as mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: false
     },
     surname: {
         type: String,
@@ -19,10 +19,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 8
+    },
+    role:{
+        type: String,
+        required: true
     }},
     {
     collection: 'users'
 })
 
 export const User = mongoose.model('User', userSchema)
+export const UserSchema = userSchema
+
 
