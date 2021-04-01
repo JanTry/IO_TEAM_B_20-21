@@ -7,10 +7,13 @@ import * as fs from 'fs'
 
 const auth = express.Router();
 
-enum Role {Teacher, Student}
+enum Role {
+  Teacher = 'teacher',
+  Student = 'student',
+}
 
-const isValidRole: CustomValidator = value => {
-  return (Role as any)[value] !== undefined
+const isValidRole: CustomValidator = (value: Role | string) => {
+  return value === Role.Teacher || value === Role.Student
 };
 
 const privateKey = fs.readFileSync('resources/private.key');
@@ -35,13 +38,13 @@ auth.post("/register",
 
     const user = new User({email, password, role});
 
-    const result = user.save((err, doc) => {
-      if (err) {
-        console.log(err);
+    const result = user.save((error, doc) => {
+      if (error) {
+        console.log(error);
         return res.status(400).json({errors: [{email: "Email already exists."}]});
       }
       res.status(200).json({
-        succes: true,
+        success: true,
         id: doc._id,
         token: jwt.sign({role: req.body.role, email: req.body.email}, privateKey, {algorithm: 'RS256'})
       });
