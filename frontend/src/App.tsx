@@ -3,6 +3,7 @@ import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 import StudentDashboard from './components/StudentDashboard';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Chat from './components/Chat';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         </Route>
         <Route exact path="/register/student" component={RegistrationForm} />
         <Route exact path="/student/dashboard" component={StudentDashboard} />
+        <Route exact path="/student/chat" component={Chat} />
       </Switch>
     </Router>
   );

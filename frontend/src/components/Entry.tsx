@@ -8,6 +8,9 @@ const Entry = () => (
     <Link to="/login/student">
       <button type="button" className="btn btn-outline-success m-4 p-5"><h2>I am a student</h2></button>
     </Link>
+    <Link to="/student/dashboard">
+      <button type="button" className="btn btn-outline-success m-4 p-5"><h2>I wanna dance with somebody</h2></button>
+    </Link>
   </div>
 );
 
