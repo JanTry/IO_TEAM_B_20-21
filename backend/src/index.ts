@@ -6,7 +6,7 @@ import dotenv  from "dotenv";
 import * as db from './database/dbUtils';
 import healthz from "./routes/healthz";
 import auth from "./routes/auth";
-import {middleware} from './middleware/auth'
+import {authMiddleware, teacherMiddleware} from './middleware/auth'
 
 db.connect()
 
@@ -24,7 +24,7 @@ const io = new Server(httpServer, {
 
 app.use(cors());
 app.use(express.json());
-app.use('/healthz', healthz);
+app.use('/healthz', authMiddleware, teacherMiddleware, healthz);
 app.use('/auth', auth);
 
 io.on('connection', (socket) => {
