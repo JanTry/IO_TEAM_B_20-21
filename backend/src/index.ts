@@ -5,7 +5,7 @@ import cors from 'cors';
 import dotenv  from "dotenv";
 import * as db from './database/dbUtils';
 import healthz from "./routes/healthz";
-
+import auth from "./routes/auth";
 
 db.connect()
 
@@ -21,8 +21,10 @@ const io = new Server(httpServer, {
 });
 
 
-app.use(cors())
-app.use('/healthz', healthz)
+app.use(cors());
+app.use(express.json());
+app.use('/healthz', healthz);
+app.use('/auth', auth);
 
 io.on('connection', (socket) => {
   console.log('a user connected');
@@ -40,3 +42,5 @@ io.on('connection', (socket) => {
 httpServer.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
+
+
