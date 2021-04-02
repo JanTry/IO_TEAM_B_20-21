@@ -1,5 +1,5 @@
 import express from "express";
-import { Session } from '../database/models/session'
+import {Session} from '../database/models/session'
 
 export const sessions = express.Router();
 
@@ -19,7 +19,6 @@ sessions.get('/validate/:sessionID/:accessCode', (req, res) => {
         if (err) {
             res.status(500).send(err);
         } else  {
-            console.log(result)
             res.status(200).send(!!result)
         }
     })
@@ -31,7 +30,6 @@ sessions.post('/', (req, res) => {
         if (err) {
             res.status(500).send(err);
         } else {
-            console.log(result);
             res.status(200).send(result)
         }
     })

@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
+const baseUrl = 'http://localhost:4000/sessions/';
+
 const StudentDashboard = () => {
   const history = useHistory();
   const [userID, setUserID] = useState('');
@@ -11,7 +13,7 @@ const StudentDashboard = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
-    const result = await axios.get(`http://localhost:4000/sessions/validate/${sessionID}/${accessCode}`);
+    const result = await axios.get(`${baseUrl}validate/${sessionID}/${accessCode}`);
     console.log(result)
     if (result.data) {
       history.push({
@@ -25,7 +27,7 @@ const StudentDashboard = () => {
 
   const createNewSession = async (event: any) => {
     event.preventDefault()
-    const result = await axios.post(`http://localhost:4000/sessions/`);
+    const result = await axios.post(baseUrl);
     console.log(result.data)
   }
 
