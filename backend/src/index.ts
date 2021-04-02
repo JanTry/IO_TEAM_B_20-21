@@ -24,7 +24,7 @@ const io = new Server(httpServer, {
 
 app.use(cors());
 app.use(express.json());
-app.use('/healthz', authMiddleware, teacherMiddleware, healthz);
+app.use('/healthz', healthz);
 app.use('/auth', auth);
 
 io.on('connection', (socket) => {
