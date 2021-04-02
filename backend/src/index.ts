@@ -6,6 +6,7 @@ import dotenv  from "dotenv";
 import * as db from './database/dbUtils';
 import healthz from "./routes/healthz";
 import auth from "./routes/auth";
+import {authMiddleware, teacherMiddleware} from './middleware/auth'
 
 db.connect()
 
