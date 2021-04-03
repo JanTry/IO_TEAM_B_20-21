@@ -1,9 +1,9 @@
 import express from "express";
 import {Session} from '../database/models/session'
 
-export const sessions = express.Router();
+export const sessionRoutes = express.Router();
 
-sessions.get('/', (req, res) => {
+sessionRoutes.get('/', (req, res) => {
     Session.find({}, (err, results) => {
         if (err) {
             res.status(500).send(err);
@@ -13,7 +13,7 @@ sessions.get('/', (req, res) => {
     })
 })
 
-sessions.get('/validate/:sessionID/:accessCode', (req, res) => {
+sessionRoutes.get('/validate/:sessionID/:accessCode', (req, res) => {
     const {sessionID, accessCode} = req.params
     Session.findOne({_id: sessionID, accessCode, online: true}, (err, result) => {
         if (err) {
@@ -24,7 +24,7 @@ sessions.get('/validate/:sessionID/:accessCode', (req, res) => {
     })
 })
 
-sessions.post('/', (req, res) => {
+sessionRoutes.post('/', (req, res) => {
     const session = {accessCode: Math.random().toString(36).substring(2, 7), online: true};
     Session.create(session, (err, result) => {
         if (err) {

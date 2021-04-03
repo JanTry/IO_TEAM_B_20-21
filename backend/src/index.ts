@@ -4,9 +4,9 @@ import {Server, Socket} from "socket.io";
 import cors from 'cors';
 import dotenv  from "dotenv";
 import * as db from './database/dbUtils';
-import healthz from "./routes/healthz";
-import auth from "./routes/auth";
-import {sessions} from "./routes/sessions";
+import healthzRoutes from "./routes/healthz";
+import authRoutes from "./routes/auth";
+import {sessionRoutes} from "./routes/session";
 import {Session} from "./database/models/session";
 
 db.connect()
@@ -25,9 +25,9 @@ const io = new Server(httpServer, {
 
 app.use(cors());
 app.use(express.json());
-app.use('/healthz', healthz);
-app.use('/auth', auth);
-app.use('/sessions', sessions);
+app.use('/healthz', healthzRoutes);
+app.use('/auth', authRoutes);
+app.use('/session', sessionRoutes);
 
 type ChatSocket = Socket & {
   userID: string,
