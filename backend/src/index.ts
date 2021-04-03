@@ -4,10 +4,11 @@ import {Server, Socket} from "socket.io";
 import cors from 'cors';
 import dotenv  from "dotenv";
 import * as db from './database/dbUtils';
-import healthzRoutes from "./routes/healthz";
-import authRoutes from "./routes/auth";
+import {healthzRoutes} from "./routes/healthz";
+import {authRoutes} from "./routes/auth";
 import {sessionRoutes} from "./routes/session";
 import {Session} from "./database/models/session";
+import {authMiddleware, teacherMiddleware} from './middleware/auth'
 
 db.connect()
 
