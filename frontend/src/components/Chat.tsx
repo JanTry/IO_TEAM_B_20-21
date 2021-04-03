@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import io from "socket.io-client";
-import './styles/Chat.css';
+import { Button, ListGroup, Container, InputGroup, Form, FormControl, Table } from 'react-bootstrap';
 
 const socket = io.connect("http://localhost:4000");
 
@@ -27,14 +27,12 @@ const Chat = () => {
 
     socket.emit('join', { userID, sessionID, accessCode }, (response: any) => {
       if (response.status === "ok") {
-        setConnected(true)
+        setConnected(true);
       } else {
-        console.error(response.msg)
+        console.error(response.msg);
       }
     })
-  }, [history.location.state])
-
-
+  }, [history.location.state]);
 
   useEffect(() => {
     socket.on("chat-message", ({ from, msg }: ChatMessage) => {
@@ -44,35 +42,60 @@ const Chat = () => {
 
   useEffect(() => {
     if (message !== '') {
-      setMessages(messages.concat(message))
+      setMessages(messages.concat(message));
     }
-  }, [message])
+  }, [message]);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
+
     if (event.target.message.value) {
       socket.emit('chat-message', event.target.message.value);
       event.target.message.value = '';
     }
-  }
+  };
 
   return (
     <div>
-      <div>
-        userID: {userID}, sessionID: {sessionID}, accessCode: {accessCode}, connected: {connected ? "yes" : "no"}
-      </div>
-      <ul id="messages">
+      <Table className="sticky-top table-dark text-center">
+        <thead>
+          <tr>
+            <th>userID</th>
+            <th>sessionID</th>
+            <th>accessCode</th>
+            <th>connected</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>{userID}</th>
+            <th>{sessionID}</th>
+            <th>{accessCode}</th>
+            <th>{connected ? "yes" : "no"}</th>
+          </tr>
+        </tbody>
+      </Table>
+
+      <ListGroup>
         {
           messages.map((message, i) =>
-            <li key={i}>{message}</li>
+            <ListGroup.Item key={i} className="pb-2">{message}</ListGroup.Item>
           )
         }
-      </ul>
-      <form id="form" onSubmit={handleSubmit}>
-        <input id="input" name="message" /><button>send</button>
-      </form>
+      </ListGroup>
+
+      <Form onSubmit={handleSubmit}>
+        <Container fluid className="fixed-bottom p-2 bg-light">
+          <InputGroup>
+            <FormControl id="message" placeholder="enter message" />
+            <InputGroup.Append>
+              <Button type="submit" variant="success">send message</Button>
+            </InputGroup.Append>
+          </InputGroup>
+        </Container>
+      </Form>
     </div>
-  )
-}
+  );
+};
 
 export default Chat;

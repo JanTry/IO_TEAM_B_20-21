@@ -1,5 +1,6 @@
 import { Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
 
 const StudentRegistration = () => {
   const handleSubmit = (event: any) => {
@@ -10,7 +11,7 @@ const StudentRegistration = () => {
     console.log(event.target.password.value);
 
     // registration logic
-    
+
     event.target.firstname.value = '';
     event.target.lastname.value = '';
     event.target.email.value = '';
@@ -18,7 +19,7 @@ const StudentRegistration = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column justify-content-center align-items-center p-2 bg-light">
+    <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center p-2 bg-light">
       <h1 className="mb-5">hello fellow student!</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="firstname">
@@ -54,7 +55,7 @@ const StudentRegistration = () => {
           </Link>
         </Form.Group>
       </Form>
-    </div>
+    </Container>
   );
 };
 

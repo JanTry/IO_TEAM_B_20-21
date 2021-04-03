@@ -1,4 +1,4 @@
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
@@ -19,20 +19,20 @@ const StudentDashboard = () => {
       history.push({
         pathname: "/student/chat",
         state: { userID, sessionID, accessCode }
-      })
+      });
     } else {
       console.error("You shall not pass")
-    }
-  }
+    };
+  };
 
   const createNewSession = async (event: any) => {
-    event.preventDefault()
+    event.preventDefault();
     const result = await axios.post(baseUrl);
-    console.log(result.data)
-  }
+    console.log(result.data);
+  };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column justify-content-center align-items-center p-2 bg-light">
+    <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center p-2 bg-light">
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="userID">
           <Form.Label>User id</Form.Label>
@@ -57,8 +57,8 @@ const StudentDashboard = () => {
           Create new session (watch dev console)
         </Button>
       </Form>
-    </div>
-  )
-}
+    </Container>
+  );
+};
 
 export default StudentDashboard;
