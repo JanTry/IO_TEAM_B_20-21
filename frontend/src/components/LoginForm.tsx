@@ -1,5 +1,6 @@
 import { Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
 
 const LecturerLogin = (props: { isLecturer: boolean }) => {
   const handleSubmit = (event: any) => {
@@ -14,7 +15,7 @@ const LecturerLogin = (props: { isLecturer: boolean }) => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex flex-column justify-content-center align-items-center p-2 bg-light">
+    <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center p-2 bg-light">
       <h1 className="mb-5">hello fellow {props.isLecturer ? 'lecturer' : 'student'}!</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="email">
@@ -45,7 +46,7 @@ const LecturerLogin = (props: { isLecturer: boolean }) => {
         }
 
       </Form>
-    </div>
+    </Container>
   );
 };
 
