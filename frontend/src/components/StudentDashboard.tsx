@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:4000/sessions/';
+const baseUrl = 'http://localhost:4000/session/';
 
 const StudentDashboard = () => {
   const history = useHistory();

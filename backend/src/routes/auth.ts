@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
 import * as fs from 'fs'
 
-const auth = express.Router();
+export const authRoutes = express.Router();
 
 enum Role {
   Teacher = 'teacher',
@@ -19,7 +19,7 @@ const isValidRole: CustomValidator = (value: Role | string) => {
 const privateKey = fs.readFileSync('resources/private.key');
 const publicKey = fs.readFileSync('resources/public.key');
 
-auth.post("/register",
+authRoutes.post("/register",
   body('email').isEmail(),
   body('password').isLength({min: 8}),
   body('role').custom(isValidRole),
@@ -51,7 +51,7 @@ auth.post("/register",
     })
   });
 
-auth.post("/login",
+authRoutes.post("/login",
   body('email').isEmail(),
   body('password').isLength({min: 8}),
   async (req, res) => {
@@ -69,5 +69,3 @@ auth.post("/login",
       return res.status(400).json({errors: [{password: "Invalid password."}]});
     });
   });
-
-export default auth;
