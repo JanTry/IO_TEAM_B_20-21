@@ -1,9 +1,11 @@
-import mongoose = require("mongoose");
-import * as dotenv from "dotenv";
+/* eslint-disable no-console */
+
+import * as dotenv from 'dotenv';
+import mongoose = require('mongoose');
 
 dotenv.config();
 
-export const connect = (
+const dbConnect = (
   databaseName = process.env.DATABASE_NAME,
   address = process.env.DATABASE_ADDRESS,
   port = process.env.DATABASE_PORT
@@ -14,9 +16,9 @@ export const connect = (
     useCreateIndex: true,
     useUnifiedTopology: true,
   });
-  mongoose.connection
-    .on("error", console.error.bind(console, "DATABASE CONNECTION ERROR"))
-    .once("open", () => {
-      console.log("DATABASE CONNECTED");
-    });
+  mongoose.connection.on('error', console.error.bind(console, 'DATABASE CONNECTION ERROR')).once('open', () => {
+    console.log('DATABASE CONNECTED');
+  });
 };
+
+export default dbConnect;

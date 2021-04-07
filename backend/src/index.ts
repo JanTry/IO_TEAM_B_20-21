@@ -1,35 +1,39 @@
-import express from "express";
-import http from "http";
-import {Server} from "socket.io";
+/* eslint-disable no-console */
+
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
 import cors from 'cors';
-import dotenv  from "dotenv";
-import * as db from './database/dbUtils';
-import healthz from "./routes/healthz";
+import dotenv from 'dotenv';
+import dbConnect from './database/dbUtils';
+import healthz from './routes/healthz';
+import { populateUsersCollection } from './database/collectionsUtils/userUtils';
+import { populateMessagesCollection } from './database/collectionsUtils/messageUtils';
 
+dbConnect();
+populateUsersCollection();
+populateMessagesCollection();
 
-db.connect()
+dotenv.config();
 
-dotenv.config()
-
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 4000;
 const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    "origin": "*",
-  }
+    origin: '*',
+  },
 });
 
-
-app.use(cors())
-app.use('/healthz', healthz)
+app.use(cors());
+app.use('/healthz', healthz);
 
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.broadcast.emit('hi');
 
   socket.on('chat-message', (message) => {
-    io.emit('broadcast-message', message)
+    io.emit('broadcast-message', message);
   });
 
   socket.on('disconnect', () => {

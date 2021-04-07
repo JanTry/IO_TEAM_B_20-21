@@ -1,17 +1,24 @@
-import * as mongoose from 'mongoose'
+import * as mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+export interface UserType {
+  name: string;
+  surname: string;
+}
+
+const userSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     surname: {
-        type: String,
-        required: false
-    }
-}, {
-    collection: 'users'
-})
+      type: String,
+      required: false,
+    },
+  },
+  {
+    collection: 'users',
+  }
+);
 
-export const User = mongoose.model('User', userSchema)
-
+export const User = mongoose.model('User', userSchema);

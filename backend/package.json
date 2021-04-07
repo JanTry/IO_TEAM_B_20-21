@@ -4,7 +4,6 @@
   "description": "package json for backend",
   "main": "dist/index.js",
   "scripts": {
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node .",
@@ -19,6 +18,7 @@
     "@types/socket.io": "^2.1.13",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "express": "^4.17.1",
     "mongodb": "^3.6.5",
     "mongoose": "^5.12.2",
