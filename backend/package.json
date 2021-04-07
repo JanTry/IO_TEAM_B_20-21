@@ -4,7 +4,6 @@
   "description": "package json for backend",
   "main": "dist/index.js",
   "scripts": {
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node .",
@@ -22,6 +21,7 @@
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "express": "^4.17.1",
     "express-validator": "^6.10.0",
     "file-system": "^1.2.2",
@@ -33,7 +33,15 @@
     "socket.io": "^4.0.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "eslint": "^7.23.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
     "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
     "ts-node": "^9.1.1",
     "tslint": "^6.1.3",
     "typescript": "^4.2.3"

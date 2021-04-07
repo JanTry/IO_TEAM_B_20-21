@@ -1,54 +1,44 @@
-import {User} from '../models/user'
+/* eslint-disable no-console */
 
-export const addUser = async (userData) => {
-    try{
-        return await new User(userData).save()
-    } catch(error) {
-        console.log("ERROR during createUser : ", error)
-    }
-}
-export const findOneUser = async (userData) => {
-    try{
-        return await User.findOne(userData)
-    } catch (error) {
-        console.log("ERROR during printAllUsers : ", error)
-    }
-}
-export const findUsers = async (userData) => {
-    try{
-        return await User.find(userData)
-    } catch (error) {
-        console.log("ERROR during printAllUsers : ", error)
-    }
-}
-export const deleteUser = async (userData) => {
-    try{
-        return await User.deleteOne(userData)
-    } catch (error) {
-        console.log("ERROR during deleteUser : ", error)
-    }
-}
-export const deleteManyUsers = async (userData) => {
-    try{
-        return await User.deleteMany(userData)
-    } catch (error) {
-        console.log("ERROR during deleteUser : ", error)
-    }
-}
+import { User, UserType } from '../models/user';
 
+export const addUser = async (userData: UserType) => {
+  return new User(userData).save();
+};
+export const findOneUser = async (userData: UserType) => {
+  return User.findOne(userData);
+};
+export const findUsers = async (userData: UserType) => {
+  return User.find(userData);
+};
+export const deleteUser = async (userData: UserType) => {
+  return User.deleteOne(userData);
+};
+export const deleteManyUsers = async (userData: UserType) => {
+  return User.deleteMany(userData);
+};
 
+export const printUsers = async (userData: UserType) => {
+  console.log(await findUsers(userData));
+};
 
-export const printUsers = async (userData={}) => {
-    console.log(await findUsers(userData))
-}
+export const printAllUsers = async () => {
+  console.log(User.find({}));
+};
 
 export const clearUsersCollection = async () => {
-    console.log('Users collection cleared, ', await deleteManyUsers({}), ' users deleted')
-}
+  return (await User.deleteMany({})).deletedCount;
+};
 
 export const populateUsersCollection = async (n = 10) => {
-    for(let i=1; i<=n; i++){
-        await addUser({name: 'NAME_'+i, surname: 'SURNAME_'+i})
-    }
-    console.log(n," new users added to users")
-}
+  for (let i = 1; i <= n; i++) {
+    addUser({
+      name: `NAME_${i}`,
+      surname: `SURNAME_${i}`,
+      email: `EMAIL${i}`,
+      password: `PASSWORD${i}`,
+      role: `ROLE${i}`,
+    });
+  }
+  console.log(n, ' new users added to users');
+};
