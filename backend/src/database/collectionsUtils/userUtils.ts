@@ -32,7 +32,13 @@ export const clearUsersCollection = async () => {
 
 export const populateUsersCollection = async (n = 10) => {
   for (let i = 1; i <= n; i++) {
-    addUser({ name: `NAME_${i}`, surname: `SURNAME_${i}` });
+    addUser({
+      name: `NAME_${i}`,
+      surname: `SURNAME_${i}`,
+      email: `EMAIL${i}`,
+      password: `PASSWORD${i}`,
+      role: `ROLE${i}`,
+    });
   }
   console.log(n, ' new users added to users');
 };

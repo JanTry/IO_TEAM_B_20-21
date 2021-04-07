@@ -1,8 +1,8 @@
 import express from 'express';
 import mongoose = require('mongoose');
 
-const healthz = express.Router();
-healthz.get('/', async (_req: express.Request, res: express.Response) => {
+const healthzRoutes = express.Router();
+healthzRoutes.get('/', async (_req: express.Request, res: express.Response) => {
   const statusCode = 200;
   const healthmessage = {
     message: 'OK',
@@ -18,4 +18,4 @@ healthz.get('/', async (_req: express.Request, res: express.Response) => {
   }
 });
 
-export default healthz;
+export default healthzRoutes;

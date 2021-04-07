@@ -1,19 +1,37 @@
 import * as mongoose from 'mongoose';
 
 export interface UserType {
-  name: string;
-  surname: string;
+  name?: string;
+  surname?: string;
+  email: string;
+  password: string;
+  role: string;
 }
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     surname: {
       type: String,
       required: false,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: 1,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 8,
+    },
+    role: {
+      type: String,
+      required: true,
     },
   },
   {
@@ -22,3 +40,4 @@ const userSchema = new mongoose.Schema(
 );
 
 export const User = mongoose.model('User', userSchema);
+export const UserSchema = userSchema;
