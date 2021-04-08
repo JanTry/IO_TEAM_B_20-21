@@ -6,16 +6,13 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { Server, Socket } from 'socket.io';
 import dbConnect from './database/dbUtils';
-import { populateUsersCollection } from './database/collectionsUtils/userUtils';
-import { populateMessagesCollection } from './database/collectionsUtils/messageUtils';
 import healthzRoutes from './routes/healthz';
 import { authRoutes } from './routes/auth';
 import { sessionRoutes } from './routes/session';
 import { Session } from './database/models/session';
+import { quizRoutes } from './routes/quiz';
 
 dbConnect();
-populateUsersCollection();
-populateMessagesCollection();
 
 dotenv.config();
 
@@ -33,6 +30,7 @@ app.use(express.json());
 app.use('/healthz', healthzRoutes);
 app.use('/auth', authRoutes);
 app.use('/session', sessionRoutes);
+app.use('/quiz', quizRoutes);
 
 type ChatSocket = Socket & {
   userID: string;
