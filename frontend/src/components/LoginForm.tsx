@@ -1,17 +1,34 @@
-import { Form, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import { Form, Button, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import loginService from '../services/login';
 
-const LecturerLogin = (props: { isLecturer: boolean }) => {
-  const handleSubmit = (event: any) => {
+const LoginForm = (props: { isLecturer: boolean }) => {
+  const history = useHistory();
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    console.log(event.target.email.value);
-    console.log(event.target.password.value);
 
-    // login logic
+    const credentials = {
+      email: event.target.email.value,
+      password: event.target.password.value
+    }
 
-    event.target.email.value = '';
-    event.target.password.value = '';
+    try {
+      const user = await loginService.login(credentials);
+      console.log(user);
+
+      window.sessionStorage.setItem('jwt', user.token);
+
+      props.isLecturer
+        ? history.push("/lecturer/dashboard")
+        : history.push("/student/dashboard");
+
+      event.target.email.value = '';
+      event.target.password.value = '';
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -50,4 +67,4 @@ const LecturerLogin = (props: { isLecturer: boolean }) => {
   );
 };
 
-export default LecturerLogin;
+export default LoginForm;
