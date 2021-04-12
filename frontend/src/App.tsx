@@ -4,7 +4,8 @@ import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 import StudentDashboard from './components/StudentDashboard';
 import Chat from './components/Chat';
-// import QuizCreator from './components/QuizCreator';
+import QuizViewer from './components/quizViewer/QuizViewer';
+import { QuestionCreatorProvider } from './context/QuestionCreatorContext';
 
 const App = () => (
   <Router>
@@ -19,6 +20,11 @@ const App = () => (
       <Route exact path="/register/student" component={RegistrationForm} />
       <Route exact path="/student/dashboard" component={StudentDashboard} />
       <Route exact path="/student/chat" component={Chat} />
+      <Route exact path="/quiz">
+        <QuestionCreatorProvider>
+          <QuizViewer />
+        </QuestionCreatorProvider>
+      </Route>
     </Switch>
   </Router>
 );

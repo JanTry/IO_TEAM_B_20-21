@@ -20,7 +20,7 @@ const Entry = () => (
     </Link>
     <Link to="/quiz">
       <Button variant="outline-dark" className="m-4 p-5">
-        <h2>Create quiz</h2>
+        <h2>quiz</h2>
       </Button>
     </Link>
   </Container>
