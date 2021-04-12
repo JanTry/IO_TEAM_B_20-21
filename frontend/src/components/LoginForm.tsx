@@ -1,6 +1,5 @@
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
 
 const LecturerLogin = (props: { isLecturer: boolean }) => {
   const handleSubmit = (event: any) => {
@@ -21,9 +20,7 @@ const LecturerLogin = (props: { isLecturer: boolean }) => {
         <Form.Group controlId="email">
           <Form.Label>Email address</Form.Label>
           <Form.Control type="email" placeholder="Enter email" />
-          <Form.Text className="text-muted">
-            We will never share your email with anyone else.
-          </Form.Text>
+          <Form.Text className="text-muted">We will never share your email with anyone else.</Form.Text>
         </Form.Group>
 
         <Form.Group controlId="password">
@@ -33,18 +30,16 @@ const LecturerLogin = (props: { isLecturer: boolean }) => {
         <Button variant="primary" type="submit" block>
           sign in
         </Button>
-        {!props.isLecturer ?
+        {!props.isLecturer ? (
           <Form.Group className="mt-5">
-            <Form.Text className="text-muted text-center">
-              do not have an account yet?
-            </Form.Text>
+            <Form.Text className="text-muted text-center">do not have an account yet?</Form.Text>
             <Link to="/register/student">
-              <button type="button" className="btn btn-outline-primary btn-block">sign up</button>
+              <button type="button" className="btn btn-outline-primary btn-block">
+                sign up
+              </button>
             </Link>
           </Form.Group>
-          : null
-        }
-
+        ) : null}
       </Form>
     </Container>
   );
