@@ -4,7 +4,7 @@ import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 import StudentDashboard from './components/StudentDashboard';
 import Chat from './components/Chat';
-import QuizCreator from './components/QuizCreator';
+// import QuizCreator from './components/QuizCreator';
 
 const App = () => (
   <Router>
@@ -19,7 +19,6 @@ const App = () => (
       <Route exact path="/register/student" component={RegistrationForm} />
       <Route exact path="/student/dashboard" component={StudentDashboard} />
       <Route exact path="/student/chat" component={Chat} />
-      <Route exact path="/createquiz" component={QuizCreator} />
     </Switch>
   </Router>
 );

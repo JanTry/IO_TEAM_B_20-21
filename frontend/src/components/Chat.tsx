@@ -20,10 +20,10 @@ const Chat = () => {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const { userID, sessionID, accessCode } = history.location.state as { [key: string]: string };
-    setUserID(userID);
-    setSessionID(sessionID);
-    setAccessCode(accessCode);
+    const { currentUserId, currentSessionID, currentAccessCode } = history.location.state as { [key: string]: string };
+    setUserID(currentUserId);
+    setSessionID(currentSessionID);
+    setAccessCode(currentAccessCode);
 
     socket.emit('join', { userID, sessionID, accessCode }, (response: any) => {
       if (response.status === 'ok') {
@@ -77,10 +77,8 @@ const Chat = () => {
       </Table>
 
       <ListGroup>
-        {messages.map((message, i) => (
-          <ListGroup.Item key={i} className="pb-2">
-            {message}
-          </ListGroup.Item>
+        {messages.map((msg) => (
+          <ListGroup.Item className="pb-2">{msg}</ListGroup.Item>
         ))}
       </ListGroup>
 
