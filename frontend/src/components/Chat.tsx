@@ -1,5 +1,9 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 import io from 'socket.io-client';
 import {
   Button,
@@ -16,11 +20,22 @@ import {
 } from 'react-bootstrap';
 import { useUser } from '../context/UserContext';
 
-const socket = io.connect('http://localhost:4000');
+const baseUrl = 'http://localhost:4000';
+
+const socket = io.connect(baseUrl);
 
 interface ChatMessage {
   from: string;
   msg: string;
+}
+
+interface Question {
+  _id: string;
+  title: string;
+  answers: Array<{
+    _id: string;
+    data: string;
+  }>;
 }
 
 const Chat = () => {
@@ -31,6 +46,14 @@ const Chat = () => {
   const [currentSessionId, setCurrentSessionId] = useState('');
   const [currentAccessCode, setCurrentAccessCode] = useState('');
   const [connected, setConnected] = useState(false);
+
+  const [responseId, setResponseId] = useState('');
+
+  const [quizId, setQuizId] = useState('');
+  const [quizIds, setQuizIds] = useState([] as string[]);
+
+  const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   const { user, updateUserId, updateSessionId, updateAccessCode } = useUser();
 
@@ -55,6 +78,31 @@ const Chat = () => {
   }, [history.location.state]);
 
   useEffect(() => {
+    const fetchQuizData = async (id: string) => {
+      const responseResult = await axios.post(`${baseUrl}/quizResponse`, { quizId: id });
+      setResponseId(responseResult.data.id);
+
+      const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
+      setQuestions(result.data);
+      console.log(result.data.questions);
+      console.log(result.data.questions[0]);
+      setQuestion(result.data.questions[0]);
+    };
+
+    socket.on('start-quiz', (data: any) => {
+      if (user && user.role === 'student') {
+        setQuizId(data.quizId);
+        fetchQuizData(data.quizId);
+      }
+    });
+
+    socket.on('end-quiz', () => {
+      setQuestions([]);
+      setQuestion({ _id: '', title: '', answers: [] });
+    });
+  }, []);
+
+  useEffect(() => {
     socket.on('chat-message', ({ from, msg }: ChatMessage) => {
       setMessage(`${from}: ${msg}`);
     });
@@ -66,25 +114,52 @@ const Chat = () => {
     }
   }, [message]);
 
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get(`${baseUrl}/quiz`);
+      if (result.data) {
+        setQuizIds(result.data);
+      }
+    };
 
-    if (event.target.message.value) {
-      socket.emit('chat-message', event.target.message.value);
-      event.target.message.value = '';
+    if (user && user.role === 'teacher') {
+      fetchData();
+    }
+  }, [user]);
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    console.log(event.target.a.value);
+    const result = await axios.put(`${baseUrl}/quizResponse`, {
+      quizResponseId: responseId,
+      quizId,
+      questionId: question._id,
+      answerId: event.target.a.value,
+    });
+    console.log(result.data);
+    if (questions.length > 1) {
+      setQuestion(questions[1]);
+      setQuestions(questions.slice(1));
+    } else {
+      setQuestion({ _id: '', title: '', answers: [] });
+      setQuestions([]);
     }
   };
 
-  const quizzes = ['quiz 1', 'quiz 2', 'quiz 3', 'quiz 4', 'quiz 5', 'quiz 6'];
+  const handleQuizIdSelect = (event: any) => {
+    setQuizId(event);
+  };
 
-  const question = {
-    data: 'Treść Pytania',
-    answers: [
-      { id: 'a)', ans: 'odpowiedź 1' },
-      { id: 'b)', ans: 'odpowiedź 2' },
-      { id: 'c)', ans: 'odpowiedź 3' },
-      { id: 'd)', ans: 'odpowiedź 4' },
-    ],
+  const handleQuizStart = () => {
+    socket.emit('start-quiz', quizId);
+  };
+
+  const handleQuizEnd = () => {
+    socket.emit('end-quiz', 'koniec');
+  };
+
+  const handleAnswerSelect = (event: any) => {
+    console.log(event);
   };
 
   return (
@@ -132,35 +207,36 @@ const Chat = () => {
           {user && user.role === 'student' ? (
             <Container fluid className="vh-100 d-flex flex-column justify-content-center px-5">
               <Form onSubmit={handleSubmit}>
-                <h3>{question.data}</h3>
+                <h3>{question.title}</h3>
                 <Form.Group as={Row}>
                   <Col>
-                    {question.answers.map((option) => (
-                      <Form.Check label={option.ans} />
+                    {question.answers.map((option: any) => (
+                      <Form.Check type="radio" name="a" value={option._id} label={option.data} />
                     ))}
                   </Col>
                 </Form.Group>
-                <Button variant="primary" type="submit" block>
-                  submit
-                </Button>
+                {question && question.answers.length > 0 ? (
+                  <Button variant="primary" type="submit" block>
+                    submit
+                  </Button>
+                ) : null}
               </Form>
             </Container>
           ) : (
             <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center px-5">
               <DropdownButton className="m-4" id="dropdown-basic-button" title="wybierz quiz">
-                {quizzes.map((quiz) => (
-                  <Dropdown.Item>{quiz}</Dropdown.Item>
+                {quizIds.map((id) => (
+                  <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={id}>
+                    {id}
+                  </Dropdown.Item>
                 ))}
               </DropdownButton>
 
-              <Button className="m-4" variant="primary" onClick={() => console.log('brand new quiz')} block>
-                nowy quiz
+              <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizStart} block>
+                Start quiz
               </Button>
-              <Button className="m-4" variant="primary" onClick={() => console.log('koniec imprezy robaki')} block>
-                zatrzymaj quiz
-              </Button>
-              <Button className="m-4" variant="primary" onClick={() => console.log('lecimy nieśpimy')} block>
-                następne pytanie
+              <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizEnd} block>
+                End quiz
               </Button>
             </Container>
           )}

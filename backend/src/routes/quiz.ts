@@ -1,12 +1,22 @@
 import express from 'express';
 import { body, CustomValidator, validationResult } from 'express-validator';
 import { Quiz } from '../database/models/quiz';
-import { User } from '../database/models/user';
 
 export const quizRoutes = express.Router();
 
 quizRoutes.get('/', (req, res) => {
-  Quiz.find({}, (err, results) => {
+  Quiz.find({ authorId: res.locals.user._id }, { _id: 1 }, null, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(results.map((elem) => elem._id));
+    }
+  });
+});
+
+quizRoutes.get('/questions/:quizId', (req, res) => {
+  const { quizId } = req.params;
+  Quiz.findOne({ _id: quizId }, { _id: 0, questions: 1 }, null, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {

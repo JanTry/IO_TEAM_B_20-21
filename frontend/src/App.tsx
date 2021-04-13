@@ -11,7 +11,7 @@ import { UserProvider } from './context/UserContext';
 
 axios.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem('jwt');
+    const token = localStorage.getItem('jwt');
     config.headers.authorization = `Bearer ${token}`;
     return config;
   },

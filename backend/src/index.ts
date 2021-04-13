@@ -67,6 +67,16 @@ io.on('connection', (socket: ChatSocket) => {
     }
   });
 
+  socket.on('start-quiz', (quizId) => {
+    console.log(quizId);
+    socket.to(socket.sessionID).emit('start-quiz', { quizId });
+  });
+
+  socket.on('end-quiz', (msg) => {
+    console.log(msg);
+    socket.to(socket.sessionID).emit('end-quiz');
+  });
+
   socket.on('disconnect', () => {
     socket.leave(socket.id);
     socket.leave(socket.sessionID);

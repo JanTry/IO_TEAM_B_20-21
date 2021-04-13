@@ -30,6 +30,7 @@ const LoginForm = (props: { isLecturer: boolean }) => {
 
     try {
       const response = await loginService.login(credentials);
+      console.log(response)
       const decodedUser: { email: string; role: string } = jwt(response.token);
 
       const userToUpdate: User = {
@@ -39,7 +40,7 @@ const LoginForm = (props: { isLecturer: boolean }) => {
 
       await onUserChange(userToUpdate);
 
-      window.sessionStorage.setItem('jwt', response.token);
+      window.localStorage.setItem('jwt', response.token);
 
       props.isLecturer ? history.push('/lecturer/dashboard') : history.push('/student/dashboard');
 
