@@ -11,27 +11,55 @@ interface QuizViewerProps {
 const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerProps) => {
   const { quizId } = props;
   const { currentQuestion, isCreatingQuestion, clearCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
+  const [questions, setQuestions] = useState();
+  const [didQuizUpdate, setDidQuizUpdate] = useState(true);
+
+  useEffect(() => {
+    if (quizId !== undefined) {
+      // fetch quiz from db && setQuestions(result)
+    }
+  });
 
   useEffect(() => {
     if (currentQuestion !== undefined && currentQuestion !== null) {
+      // update questins with currentQuestion
       clearCurrentQuestion();
+      setDidQuizUpdate(true);
     }
-  }, [currentQuestion, clearCurrentQuestion]);
+  }, [currentQuestion]);
 
   const onCreateQuestionClicked = useCallback(() => {
     toggleIsCreatingQuestion();
   }, []);
 
-  console.log(quizId);
-  const [questions, setQuestions] = useState();
+  const onSaveChangesClicked = useCallback(() => {
+    // save changes to db
+  }, []);
+
+  const onCancelClicked = useCallback(() => {
+    // if quizId undefined exit else view old
+  }, []);
+
   return (
     <div>
       {isCreatingQuestion ? (
         <QuestionCreator />
       ) : (
-        <Button variant="outline-primary" className="m-2 p-2" onClick={onCreateQuestionClicked}>
-          <p>add question</p>
-        </Button>
+        <div>
+          <Button variant="outline-primary" className="m-2 p-2" onClick={onCreateQuestionClicked}>
+            <p>add question</p>
+          </Button>
+          {didQuizUpdate && (
+            <div>
+              <Button variant="outline-primary" className="m-2 p-2" onClick={onSaveChangesClicked}>
+                <p>save changes</p>
+              </Button>
+              <Button variant="outline-primary" className="m-2 p-2" onClick={onCancelClicked}>
+                <p>cancel</p>
+              </Button>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

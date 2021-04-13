@@ -1,9 +1,19 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import { useQuestionCreator } from '../../context/QuestionCreatorContext';
 
 const QuestionCreator: React.FunctionComponent = () => {
-  const [a, seta] = useState();
+  const { currentQuestion, isCreatingQuestion, clearCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
+
+  const onSavePressed = useCallback(() => {
+    toggleIsCreatingQuestion();
+  }, []);
+
+  const onCancelPressed = useCallback(() => {
+    toggleIsCreatingQuestion();
+  }, []);
+
   return (
     <div>
       <Form>
@@ -19,8 +29,11 @@ const QuestionCreator: React.FunctionComponent = () => {
         <Form.Group controlId="formBasicCheckbox">
           <Form.Check type="checkbox" label="Correct answer" />
         </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
+        <Button variant="primary" type="submit" onClick={onSavePressed}>
+          Save
+        </Button>
+        <Button variant="primary" type="submit" onClick={onCancelPressed}>
+          Cancel
         </Button>
       </Form>
     </div>

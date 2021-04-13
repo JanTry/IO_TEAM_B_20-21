@@ -1,21 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-
-interface Answer {
-  data: string;
-  isCorrect: boolean;
-}
-
-interface Question {
-  title: string;
-  answers: Answer[];
-}
+import { QuestionValue } from '../components/quizViewer/Question';
 
 interface QuestionCreatorContextValue {
-  currentQuestion: Question | null;
+  currentQuestion: QuestionValue | null;
   isCreatingQuestion: boolean;
-  updateCurrentQuestion: (arg0: Question) => void;
+  updateCurrentQuestion: (arg0: QuestionValue) => void;
   clearCurrentQuestion: () => void;
   toggleIsCreatingQuestion: () => void;
 }
@@ -30,10 +21,10 @@ const QuestionCreatorContext = createContext<QuestionCreatorContextValue>({
 
 export const QuestionCreatorProvider: React.FunctionComponent = (props) => {
   const { children } = props;
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionValue | null>(null);
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
 
-  const updateCurrentQuestion = useCallback((question: Question) => {
+  const updateCurrentQuestion = useCallback((question: QuestionValue) => {
     setCurrentQuestion(question);
   }, []);
 
