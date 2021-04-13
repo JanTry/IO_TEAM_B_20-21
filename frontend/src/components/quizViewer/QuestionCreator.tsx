@@ -1,38 +1,78 @@
 /* eslint-disable no-unused-vars */
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';
+import { AnswerValue } from './Question';
 
 const QuestionCreator: React.FunctionComponent = () => {
-  const { currentQuestion, isCreatingQuestion, clearCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
+  const { updateCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
 
-  const onSavePressed = useCallback(() => {
-    toggleIsCreatingQuestion();
-  }, []);
+  const [title, setTitle] = useState<string>();
+  const [answers, setAnswers] = useState<AnswerValue[]>();
 
-  const onCancelPressed = useCallback(() => {
+  const onCancelPressed = () => {
     toggleIsCreatingQuestion();
-  }, []);
+  };
+
+  const onAddAnswerPressed = () => {
+    const newAnswer = { data: '', isCorrect: false };
+    if (answers === undefined) {
+      setAnswers([newAnswer]);
+    } else {
+      setAnswers([...answers, newAnswer]);
+    }
+  };
+
+  const onSubmit = (e: any) => {
+    if (title !== undefined && answers !== undefined) {
+      updateCurrentQuestion({ title, answers });
+    }
+    e.preventDefault();
+
+    toggleIsCreatingQuestion();
+  };
+
+  const onTitleChanged = (e: any) => {
+    setTitle(e.target.value);
+  };
+
+  const onAnswerChanged = (id: number) => (e: any) => {
+    if (answers !== undefined) {
+      if (e.target.type === 'checkbox') {
+        setAnswers([
+          ...answers.slice(0, id),
+          { ...answers[id], isCorrect: !answers[id].isCorrect },
+          ...answers.slice(id + 1),
+        ]);
+      }
+      if (e.target.type === 'text') {
+        setAnswers([...answers.slice(0, id), { ...answers[id], data: e.target.value }, ...answers.slice(id + 1)]);
+      }
+    }
+  };
 
   return (
     <div>
-      <Form>
-        <Form.Group>
-          <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+      <Form onSubmit={onSubmit}>
+        <Form.Group onChange={onTitleChanged}>
+          <Form.Label>Question title</Form.Label>
+          <Form.Control value={title} placeholder="email@example.com" />
         </Form.Group>
-
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Answer</Form.Label>
-          <Form.Control type="password" placeholder="Answer" />
-        </Form.Group>
-        <Form.Group controlId="formBasicCheckbox">
-          <Form.Check type="checkbox" label="Correct answer" />
-        </Form.Group>
-        <Button variant="primary" type="submit" onClick={onSavePressed}>
+        {answers !== undefined &&
+          [...answers].map((_, i) => (
+            <Form.Group onChange={onAnswerChanged(i)} id={i.toString()}>
+              <Form.Label>Answer {i + 1}</Form.Label>
+              <Form.Control placeholder="answer" />
+              <Form.Check type="checkbox" label="Correct answer" />
+            </Form.Group>
+          ))}
+        <Button variant="primary" onClick={onAddAnswerPressed}>
+          Add Answer
+        </Button>
+        <Button variant="primary" type="submit">
           Save
         </Button>
-        <Button variant="primary" type="submit" onClick={onCancelPressed}>
+        <Button variant="primary" type="button" onClick={onCancelPressed}>
           Cancel
         </Button>
       </Form>

@@ -33,7 +33,7 @@ export const QuestionCreatorProvider: React.FunctionComponent = (props) => {
 
   const toggleIsCreatingQuestion = useCallback(() => {
     setIsCreatingQuestion(!isCreatingQuestion);
-  }, []);
+  }, [isCreatingQuestion]);
 
   return (
     <QuestionCreatorContext.Provider
