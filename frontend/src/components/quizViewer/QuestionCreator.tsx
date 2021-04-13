@@ -7,7 +7,7 @@ import { AnswerValue } from './Question';
 const QuestionCreator: React.FunctionComponent = () => {
   const { updateCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
 
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<string>('');
   const [answers, setAnswers] = useState<AnswerValue[]>();
 
   const onCancelPressed = () => {
@@ -24,7 +24,7 @@ const QuestionCreator: React.FunctionComponent = () => {
   };
 
   const onSubmit = (e: ChangeEvent<HTMLFormElement>) => {
-    if (title !== undefined && answers !== undefined) {
+    if (title !== '' && answers !== undefined) {
       updateCurrentQuestion({ title, answers });
     }
     e.preventDefault();
@@ -56,11 +56,11 @@ const QuestionCreator: React.FunctionComponent = () => {
       <Form onSubmit={onSubmit}>
         <Form.Group onChange={onTitleChanged}>
           <Form.Label>Question title</Form.Label>
-          <Form.Control value={title} placeholder="email@example.com" />
+          <Form.Control placeholder="email@example.com" />
         </Form.Group>
         {answers !== undefined &&
           [...answers].map((_, i) => (
-            <Form.Group onChange={onAnswerChanged(i)} id={i.toString()}>
+            <Form.Group onChange={onAnswerChanged(i)} key={i.toString()}>
               <Form.Label>Answer {i + 1}</Form.Label>
               <Form.Control placeholder="answer" />
               <Form.Check type="checkbox" label="Correct answer" />
