@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface AnswerValue {
   data: string;
   isCorrect: boolean;
@@ -8,9 +10,24 @@ export interface QuestionValue {
   answers: AnswerValue[];
 }
 
-const Question = () =>{
-<></>
-
+interface QuestionProps {
+  question: QuestionValue;
 }
+
+const Question: React.FunctionComponent<QuestionProps> = (props: QuestionProps) => {
+  const { question } = props;
+  return (
+    <div>
+      <h2>title: {question.title}</h2>
+      {question.answers.map((answer, i) => (
+        <div>
+          <p>answer {i}</p>
+          <p>data: {answer.data}</p>
+          <p>isCorrect: {answer.isCorrect.toString()}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default Question;

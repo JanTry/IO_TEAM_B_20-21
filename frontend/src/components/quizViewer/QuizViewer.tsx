@@ -48,6 +48,7 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
 
   return (
     <div>
+      {questions !== undefined && questions.map((question) => <Question question={question} />)}
       {isCreatingQuestion ? (
         <QuestionCreator />
       ) : (
