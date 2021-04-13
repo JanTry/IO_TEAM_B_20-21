@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import axios from 'axios';
 import Entry from './components/Entry';
 import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
@@ -7,6 +8,15 @@ import Chat from './components/Chat';
 import QuizViewer from './components/quizViewer/QuizViewer';
 import { QuestionCreatorProvider } from './context/QuestionCreatorContext';
 import { UserProvider } from './context/UserContext';
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem('jwt');
+    config.headers.authorization = `Bearer ${token}`;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 const App = () => (
   <Router>

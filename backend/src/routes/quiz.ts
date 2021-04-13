@@ -22,18 +22,8 @@ const validAnswersValidator: CustomValidator = (validAnswersIds, meta) => {
   return validAnswersIds.every((id) => answers.find((a) => a._id === id) != null);
 };
 
-const authorIdValidator: CustomValidator = async (authorId) => {
-  return new Promise<void>((resolve, reject) => {
-    User.findOne({ _id: authorId }).then((res: any) => {
-      if (res != null && res.role === 'teacher') resolve();
-      else reject();
-    });
-  });
-};
-
 quizRoutes.post(
   '/',
-  body('authorId').isMongoId().custom(authorIdValidator).withMessage('Invalid user'),
   body('questions.*.text').isString().isLength({ max: 255 }),
   body('questions.*.points').isInt({ min: 0, max: 100 }),
   body('questions.*.answers.*._id').isMongoId(),
@@ -42,7 +32,8 @@ quizRoutes.post(
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-    Quiz.create(req.body, (err, result) => {
+    const data = { ...req.body, authorId: res.locals.user._id };
+    Quiz.create(data, (err, result) => {
       if (err) {
         return res.status(500).send(err);
       }
