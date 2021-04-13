@@ -1,14 +1,18 @@
 import { model, Schema, Types } from 'mongoose';
 
 const answerSchema = new Schema({
-  text: {
+  data: {
     type: String,
     required: true,
+  },
+  isCorrect: {
+    type: Boolean,
+    reruired: true,
   },
 });
 
 const questionSchema = new Schema({
-  text: {
+  title: {
     type: String,
     required: true,
   },
@@ -18,10 +22,6 @@ const questionSchema = new Schema({
   },
   points: {
     type: Number,
-    required: true,
-  },
-  validAnswers: {
-    type: [Types.ObjectId],
     required: true,
   },
 });
