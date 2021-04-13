@@ -12,7 +12,7 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
   const { quizId } = props;
   const { currentQuestion, isCreatingQuestion, clearCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
   const [questions, setQuestions] = useState();
-  const [didQuizUpdate, setDidQuizUpdate] = useState(true);
+  const [didQuizUpdate, setDidQuizUpdate] = useState(false);
 
   useEffect(() => {
     if (quizId !== undefined) {
@@ -63,10 +63,6 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
       )}
     </div>
   );
-};
-
-QuizViewer.defaultProps = {
-  quizId: undefined,
 };
 
 export default QuizViewer;

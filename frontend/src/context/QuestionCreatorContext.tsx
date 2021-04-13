@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { QuestionValue } from '../components/quizViewer/Question';
