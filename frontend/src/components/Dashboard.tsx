@@ -22,7 +22,7 @@ const Dashboard = () => {
       updateSessionId(sessionId);
       updateAccessCode(accessCode);
       history.push({
-        pathname: '/student/chat',
+        pathname: '/chat',
         state: { userId, sessionId, accessCode },
       });
     } else {

@@ -22,7 +22,7 @@ const App = () => (
         <Route exact path="/register/student" component={RegistrationForm} />
         <Route exact path="/student/dashboard" component={Dashboard} />
         <Route exact path="/lecturer/dashboard" component={Dashboard} />
-        <Route exact path="/student/chat" component={Chat} />
+        <Route exact path="/chat" component={Chat} />
         <Route exact path="/quiz">
           <QuestionCreatorProvider>
             <QuizViewer />

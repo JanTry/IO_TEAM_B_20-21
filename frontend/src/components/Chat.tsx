@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import io from 'socket.io-client';
-import { Button, ListGroup, Container, InputGroup, Form, FormControl, Table } from 'react-bootstrap';
+import {
+  Button,
+  ListGroup,
+  Container,
+  Row,
+  Col,
+  InputGroup,
+  Form,
+  FormControl,
+  Table,
+  DropdownButton,
+  Dropdown,
+} from 'react-bootstrap';
 import { useUser } from '../context/UserContext';
 
 const socket = io.connect('http://localhost:4000');
@@ -20,7 +32,7 @@ const Chat = () => {
   const [currentAccessCode, setCurrentAccessCode] = useState('');
   const [connected, setConnected] = useState(false);
 
-  const { updateUserId, updateSessionId, updateAccessCode } = useUser();
+  const { user, updateUserId, updateSessionId, updateAccessCode } = useUser();
 
   useEffect(() => {
     console.log(history.location.state);
@@ -63,8 +75,20 @@ const Chat = () => {
     }
   };
 
+  const quizzes = ['quiz 1', 'quiz 2', 'quiz 3', 'quiz 4', 'quiz 5', 'quiz 6'];
+
+  const question = {
+    data: 'Treść Pytania',
+    answers: [
+      { id: 'a)', ans: 'odpowiedź 1' },
+      { id: 'b)', ans: 'odpowiedź 2' },
+      { id: 'c)', ans: 'odpowiedź 3' },
+      { id: 'd)', ans: 'odpowiedź 4' },
+    ],
+  };
+
   return (
-    <div>
+    <Container fluid>
       <Table className="sticky-top table-dark text-center">
         <thead>
           <tr>
@@ -83,26 +107,66 @@ const Chat = () => {
           </tr>
         </tbody>
       </Table>
+      <Row>
+        <Col className="m-2 vh-100">
+          <ListGroup>
+            {messages.map((msg) => (
+              <ListGroup.Item className="pb-2">{msg}</ListGroup.Item>
+            ))}
+          </ListGroup>
 
-      <ListGroup>
-        {messages.map((msg) => (
-          <ListGroup.Item className="pb-2">{msg}</ListGroup.Item>
-        ))}
-      </ListGroup>
+          <Form onSubmit={handleSubmit}>
+            <div className="fixed-bottom w-50 p-2 bg-dark">
+              <InputGroup>
+                <FormControl id="message" placeholder="enter message" />
+                <InputGroup.Append>
+                  <Button type="submit" variant="success">
+                    send message
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
+            </div>
+          </Form>
+        </Col>
+        <Col className="p-2 vh-100">
+          {user && user.role === 'student' ? (
+            <Container fluid className="vh-100 d-flex flex-column justify-content-center px-5">
+              <Form onSubmit={handleSubmit}>
+                <h3>{question.data}</h3>
+                <Form.Group as={Row}>
+                  <Col>
+                    {question.answers.map((option) => (
+                      <Form.Check label={option.ans} />
+                    ))}
+                  </Col>
+                </Form.Group>
+                <Button variant="primary" type="submit" block>
+                  submit
+                </Button>
+              </Form>
+            </Container>
+          ) : (
+            <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center px-5">
+              <DropdownButton className="m-4" id="dropdown-basic-button" title="wybierz quiz">
+                {quizzes.map((quiz) => (
+                  <Dropdown.Item>{quiz}</Dropdown.Item>
+                ))}
+              </DropdownButton>
 
-      <Form onSubmit={handleSubmit}>
-        <Container fluid className="fixed-bottom p-2 bg-light">
-          <InputGroup>
-            <FormControl id="message" placeholder="enter message" />
-            <InputGroup.Append>
-              <Button type="submit" variant="success">
-                send message
+              <Button className="m-4" variant="primary" onClick={() => console.log('brand new quiz')} block>
+                nowy quiz
               </Button>
-            </InputGroup.Append>
-          </InputGroup>
-        </Container>
-      </Form>
-    </div>
+              <Button className="m-4" variant="primary" onClick={() => console.log('koniec imprezy robaki')} block>
+                zatrzymaj quiz
+              </Button>
+              <Button className="m-4" variant="primary" onClick={() => console.log('lecimy nieśpimy')} block>
+                następne pytanie
+              </Button>
+            </Container>
+          )}
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
