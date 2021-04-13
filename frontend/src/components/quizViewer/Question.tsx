@@ -20,7 +20,7 @@ const Question: React.FunctionComponent<QuestionProps> = (props: QuestionProps) 
     <div>
       <h2>title: {question.title}</h2>
       {question.answers.map((answer, i) => (
-        <div>
+        <div key={question.title}>
           <p>answer {i}</p>
           <p>data: {answer.data}</p>
           <p>isCorrect: {answer.isCorrect.toString()}</p>
