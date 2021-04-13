@@ -1,20 +1,27 @@
 import { Form, Button, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import registerService from '../services/register';
 
-const StudentRegistration = () => {
-  const handleSubmit = (event: any) => {
+const RegistrationForm = () => {
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    console.log(event.target.firstname.value);
-    console.log(event.target.lastname.value);
-    console.log(event.target.email.value);
-    console.log(event.target.password.value);
 
-    // registration logic
+    const credentials = {
+      email: event.target.email.value,
+      password: event.target.password.value,
+      role: 'student'
+    }
 
-    event.target.firstname.value = '';
-    event.target.lastname.value = '';
-    event.target.email.value = '';
-    event.target.password.value = '';
+    try {
+      const user = await registerService.register(credentials);
+      console.log(user);
+
+      event.target.email.value = '';
+      event.target.password.value = '';
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -58,4 +65,4 @@ const StudentRegistration = () => {
   );
 };
 
-export default StudentRegistration;
+export default RegistrationForm;
