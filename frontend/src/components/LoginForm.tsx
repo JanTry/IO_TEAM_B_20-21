@@ -1,11 +1,24 @@
 /* eslint-disable no-unused-expressions */
+import React, { useCallback } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { Form, Button, Container } from 'react-bootstrap';
+import jwt from 'jwt-decode';
 import loginService from '../services/login';
+import { useUser } from '../context/UserContext';
+
+interface User {
+  email: string;
+  role: string;
+}
 
 const LoginForm = (props: { isLecturer: boolean }) => {
   const { isLecturer } = props;
+  const { updateUser } = useUser();
   const history = useHistory();
+
+  const onUserChange = useCallback((userToUpdate: User) => {
+    updateUser(userToUpdate);
+  }, []);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -16,14 +29,19 @@ const LoginForm = (props: { isLecturer: boolean }) => {
     };
 
     try {
-      const user = await loginService.login(credentials);
-      console.log(user);
+      const response = await loginService.login(credentials);
+      const decodedUser: { email: string; role: string } = jwt(response.token);
 
-      window.sessionStorage.setItem('jwt', user.token);
+      const userToUpdate: User = {
+        email: decodedUser.email,
+        role: decodedUser.role,
+      };
 
-      props.isLecturer
-        ? history.push("/lecturer/dashboard")
-        : history.push("/student/dashboard");
+      await onUserChange(userToUpdate);
+
+      window.sessionStorage.setItem('jwt', response.token);
+
+      props.isLecturer ? history.push('/lecturer/dashboard') : history.push('/student/dashboard');
 
       event.target.email.value = '';
       event.target.password.value = '';

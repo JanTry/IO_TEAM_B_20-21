@@ -1,8 +1,10 @@
 import { Form, Button, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import registerService from '../services/register';
 
 const RegistrationForm = () => {
+  const history = useHistory();
+
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
@@ -14,7 +16,10 @@ const RegistrationForm = () => {
 
     try {
       const user = await registerService.register(credentials);
-      console.log(user);
+
+      if (user) {
+        history.push('/login/student');
+      }
 
       event.target.email.value = '';
       event.target.password.value = '';

@@ -6,25 +6,28 @@ import StudentDashboard from './components/StudentDashboard';
 import Chat from './components/Chat';
 import QuizViewer from './components/quizViewer/QuizViewer';
 import { QuestionCreatorProvider } from './context/QuestionCreatorContext';
+import { UserProvider } from './context/UserContext';
 
 const App = () => (
   <Router>
     <Switch>
-      <Route exact path="/" component={Entry} />
-      <Route exact path="/login/lecturer">
-        <LoginForm isLecturer />
-      </Route>
-      <Route exact path="/login/student">
-        <LoginForm isLecturer={false} />
-      </Route>
-      <Route exact path="/register/student" component={RegistrationForm} />
-      <Route exact path="/student/dashboard" component={StudentDashboard} />
-      <Route exact path="/student/chat" component={Chat} />
-      <Route exact path="/quiz">
-        <QuestionCreatorProvider>
-          <QuizViewer />
-        </QuestionCreatorProvider>
-      </Route>
+      <UserProvider>
+        <Route exact path="/" component={Entry} />
+        <Route exact path="/login/lecturer">
+          <LoginForm isLecturer />
+        </Route>
+        <Route exact path="/login/student">
+          <LoginForm isLecturer={false} />
+        </Route>
+        <Route exact path="/register/student" component={RegistrationForm} />
+        <Route exact path="/student/dashboard" component={StudentDashboard} />
+        <Route exact path="/student/chat" component={Chat} />
+        <Route exact path="/quiz">
+          <QuestionCreatorProvider>
+            <QuizViewer />
+          </QuestionCreatorProvider>
+        </Route>
+      </UserProvider>
     </Switch>
   </Router>
 );
