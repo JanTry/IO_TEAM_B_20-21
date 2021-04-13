@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Entry from './components/Entry';
 import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
-import StudentDashboard from './components/StudentDashboard';
+import Dashboard from './components/Dashboard';
 import Chat from './components/Chat';
 import QuizViewer from './components/quizViewer/QuizViewer';
 import { QuestionCreatorProvider } from './context/QuestionCreatorContext';
@@ -20,7 +20,8 @@ const App = () => (
           <LoginForm isLecturer={false} />
         </Route>
         <Route exact path="/register/student" component={RegistrationForm} />
-        <Route exact path="/student/dashboard" component={StudentDashboard} />
+        <Route exact path="/student/dashboard" component={Dashboard} />
+        <Route exact path="/lecturer/dashboard" component={Dashboard} />
         <Route exact path="/student/chat" component={Chat} />
         <Route exact path="/quiz">
           <QuestionCreatorProvider>

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { Form, Button, Container } from 'react-bootstrap';
 import jwt from 'jwt-decode';

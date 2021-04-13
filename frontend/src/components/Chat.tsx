@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import io from 'socket.io-client';
 import { Button, ListGroup, Container, InputGroup, Form, FormControl, Table } from 'react-bootstrap';
+import { useUser } from '../context/UserContext';
 
 const socket = io.connect('http://localhost:4000');
 
@@ -14,18 +15,25 @@ const Chat = () => {
   const history = useHistory();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([] as string[]);
-  const [userID, setUserID] = useState('');
-  const [sessionID, setSessionID] = useState('');
-  const [accessCode, setAccessCode] = useState('');
+  const [currentUserId, setCurrentUserId] = useState('');
+  const [currentSessionId, setCurrentSessionId] = useState('');
+  const [currentAccessCode, setCurrentAccessCode] = useState('');
   const [connected, setConnected] = useState(false);
 
-  useEffect(() => {
-    const { currentUserId, currentSessionID, currentAccessCode } = history.location.state as { [key: string]: string };
-    setUserID(currentUserId);
-    setSessionID(currentSessionID);
-    setAccessCode(currentAccessCode);
+  const { updateUserId, updateSessionId, updateAccessCode } = useUser();
 
-    socket.emit('join', { userID, sessionID, accessCode }, (response: any) => {
+  useEffect(() => {
+    console.log(history.location.state);
+    const { userId, sessionId, accessCode } = history.location.state as { [key: string]: string };
+    setCurrentUserId(userId);
+    setCurrentSessionId(sessionId);
+    setCurrentAccessCode(accessCode);
+
+    updateUserId(currentUserId);
+    updateSessionId(currentSessionId);
+    updateAccessCode(currentAccessCode);
+
+    socket.emit('join', { userID: userId, sessionID: sessionId, accessCode }, (response: any) => {
       if (response.status === 'ok') {
         setConnected(true);
       } else {
@@ -68,9 +76,9 @@ const Chat = () => {
         </thead>
         <tbody>
           <tr>
-            <th>{userID}</th>
-            <th>{sessionID}</th>
-            <th>{accessCode}</th>
+            <th>{currentUserId}</th>
+            <th>{currentSessionId}</th>
+            <th>{currentAccessCode}</th>
             <th>{connected ? 'yes' : 'no'}</th>
           </tr>
         </tbody>
