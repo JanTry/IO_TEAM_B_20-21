@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Container, Button, ButtonGroup } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';
 import QuestionCreator from './QuestionCreator';
 
@@ -41,27 +41,27 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
   }, []);
 
   return (
-    <div>
+    <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center p-2 bg-light">
       {isCreatingQuestion ? (
         <QuestionCreator />
       ) : (
-        <div>
-          <Button variant="outline-primary" className="m-2 p-2" onClick={onCreateQuestionClicked}>
-            <p>add question</p>
+        <Container className="d-flex flex-column justify-content-between">
+          <Button variant="primary" className="my-2 p-2" block onClick={onCreateQuestionClicked}>
+            add question
           </Button>
           {didQuizUpdate && (
             <div>
-              <Button variant="outline-primary" className="m-2 p-2" onClick={onSaveChangesClicked}>
-                <p>save changes</p>
+              <Button variant="outline-success" className="p-2" block onClick={onSaveChangesClicked}>
+                save changes
               </Button>
-              <Button variant="outline-primary" className="m-2 p-2" onClick={onCancelClicked}>
-                <p>cancel</p>
+              <Button variant="outline-danger" className="p-2" block onClick={onCancelClicked}>
+                cancel
               </Button>
             </div>
           )}
-        </div>
+        </Container>
       )}
-    </div>
+    </Container>
   );
 };
 

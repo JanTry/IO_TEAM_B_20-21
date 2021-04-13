@@ -27,7 +27,7 @@
     }
   },
   "rules": {
-    "prettier/prettier": "warning",
+    "prettier/prettier": 1,
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }],
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",

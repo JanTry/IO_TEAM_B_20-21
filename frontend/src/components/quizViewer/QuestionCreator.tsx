@@ -17,22 +17,47 @@ const QuestionCreator: React.FunctionComponent = () => {
   return (
     <div>
       <Form>
-        <Form.Group>
-          <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+        <Form.Group controlId="question">
+          <Form.Label>Question</Form.Label>
+          <Form.Control type="text" placeholder="Enter question" />
         </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Answer</Form.Label>
-          <Form.Control type="password" placeholder="Answer" />
+        <Form.Group controlId="a-answer">
+          <Form.Label>Answer a</Form.Label>
+          <Form.Control type="text" placeholder="Enter answer a" />
+          <Form.Group controlId="formBasicCheckboxA">
+            <Form.Check type="checkbox" label="Correct answer" />
+          </Form.Group>
         </Form.Group>
-        <Form.Group controlId="formBasicCheckbox">
-          <Form.Check type="checkbox" label="Correct answer" />
+
+        <Form.Group controlId="b-answer">
+          <Form.Label>Answer b</Form.Label>
+          <Form.Control type="text" placeholder="Enter answer b" />
+          <Form.Group controlId="formBasicCheckboxB">
+            <Form.Check type="checkbox" label="Correct answer" />
+          </Form.Group>
         </Form.Group>
-        <Button variant="primary" type="submit" onClick={onSavePressed}>
+
+        <Form.Group controlId="c-answer">
+          <Form.Label>Answer c</Form.Label>
+          <Form.Control type="text" placeholder="Enter answer c" />
+          <Form.Group controlId="formBasicCheckboxC">
+            <Form.Check type="checkbox" label="Correct answer" />
+          </Form.Group>
+        </Form.Group>
+
+        <Form.Group controlId="d-answer">
+          <Form.Label>Answer d</Form.Label>
+          <Form.Control type="text" placeholder="Enter answer d" />
+          <Form.Group controlId="formBasicCheckboxD">
+            <Form.Check type="checkbox" label="Correct answer" />
+          </Form.Group>
+        </Form.Group>
+
+        <Button variant="outline-success" type="submit" block onClick={onSavePressed}>
           Save
         </Button>
-        <Button variant="primary" type="submit" onClick={onCancelPressed}>
+        <Button variant="outline-danger" type="submit" block onClick={onCancelPressed}>
           Cancel
         </Button>
       </Form>

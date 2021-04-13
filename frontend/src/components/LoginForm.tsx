@@ -1,9 +1,10 @@
-import { useHistory } from 'react-router-dom';
+/* eslint-disable no-unused-expressions */
+import { useHistory, Link } from 'react-router-dom';
 import { Form, Button, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import loginService from '../services/login';
 
 const LoginForm = (props: { isLecturer: boolean }) => {
+  const { isLecturer } = props;
   const history = useHistory();
 
   const handleSubmit = async (event: any) => {
@@ -11,8 +12,8 @@ const LoginForm = (props: { isLecturer: boolean }) => {
 
     const credentials = {
       email: event.target.email.value,
-      password: event.target.password.value
-    }
+      password: event.target.password.value,
+    };
 
     try {
       const user = await loginService.login(credentials);
@@ -33,7 +34,7 @@ const LoginForm = (props: { isLecturer: boolean }) => {
 
   return (
     <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center p-2 bg-light">
-      <h1 className="mb-5">hello fellow {props.isLecturer ? 'lecturer' : 'student'}!</h1>
+      <h1 className="mb-5">hello fellow {isLecturer ? 'lecturer' : 'student'}!</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="email">
           <Form.Label>Email address</Form.Label>
@@ -48,7 +49,7 @@ const LoginForm = (props: { isLecturer: boolean }) => {
         <Button variant="primary" type="submit" block>
           sign in
         </Button>
-        {!props.isLecturer ? (
+        {!isLecturer ? (
           <Form.Group className="mt-5">
             <Form.Text className="text-muted text-center">do not have an account yet?</Form.Text>
             <Link to="/register/student">

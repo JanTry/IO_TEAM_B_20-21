@@ -3,15 +3,14 @@ import { Link } from 'react-router-dom';
 import registerService from '../services/register';
 
 const RegistrationForm = () => {
-
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
     const credentials = {
       email: event.target.email.value,
       password: event.target.password.value,
-      role: 'student'
-    }
+      role: 'student',
+    };
 
     try {
       const user = await registerService.register(credentials);

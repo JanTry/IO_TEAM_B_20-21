@@ -12,7 +12,7 @@ const App = () => (
     <Switch>
       <Route exact path="/" component={Entry} />
       <Route exact path="/login/lecturer">
-        <LoginForm isLecturer={true} />
+        <LoginForm isLecturer />
       </Route>
       <Route exact path="/login/student">
         <LoginForm isLecturer={false} />
