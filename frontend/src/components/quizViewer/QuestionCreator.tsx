@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';
 import { AnswerValue } from './Question';
@@ -23,7 +23,7 @@ const QuestionCreator: React.FunctionComponent = () => {
     }
   };
 
-  const onSubmit = (e: any) => {
+  const onSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     if (title !== undefined && answers !== undefined) {
       updateCurrentQuestion({ title, answers });
     }
@@ -32,11 +32,11 @@ const QuestionCreator: React.FunctionComponent = () => {
     toggleIsCreatingQuestion();
   };
 
-  const onTitleChanged = (e: any) => {
+  const onTitleChanged = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
 
-  const onAnswerChanged = (id: number) => (e: any) => {
+  const onAnswerChanged = (id: number) => (e: ChangeEvent<HTMLInputElement>) => {
     if (answers !== undefined) {
       if (e.target.type === 'checkbox') {
         setAnswers([

@@ -54,8 +54,4 @@ QuestionCreatorProvider.propTypes = {
   children: PropTypes.node,
 };
 
-QuestionCreatorProvider.defaultProps = {
-  children: null,
-};
-
 export const useQuestionCreator = (): QuestionCreatorContextValue => useContext(QuestionCreatorContext);

@@ -25,7 +25,7 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
     // update questions with currentQuestion
     if (currentQuestion !== undefined && currentQuestion !== null) {
       if (questions !== undefined) {
-        setQuestions([...questions]);
+        setQuestions([...questions, currentQuestion]);
       } else {
         setQuestions([currentQuestion]);
       }
@@ -38,8 +38,9 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
     toggleIsCreatingQuestion();
   }, []);
 
-  const onSaveChangesClicked = useCallback(() => {
+  const onSaveChangesClicked = useCallback(async () => {
     // save changes to db
+    const url = 'http://localhost:4000/quiz';
   }, []);
 
   const onCancelClicked = useCallback(() => {
