@@ -23,9 +23,9 @@ const validAnswersValidator: CustomValidator = (validAnswersIds, meta) => {
   return validAnswersIds.every((id) => answers.find((a) => a._id === id) != null);
 };
 
-const authorIdValidator: CustomValidator = async (authorId) => {
+const studentIdValidator: CustomValidator = async (studentId) => {
   return new Promise<void>((resolve, reject) => {
-    User.findOne({ _id: authorId }).then((res: any) => {
+    User.findOne({ _id: studentId }).then((res: any) => {
       if (res != null && res.role === 'student') resolve();
       else reject();
     });
@@ -44,9 +44,9 @@ const quizIdValidator: CustomValidator = async (quizId) => {
 quizResponseRoutes.post(
     '/',
     body('quizId').isMongoId().custom(quizIdValidator).withMessage('Invalid Quiz'),
-    body('authorId').isMongoId().custom(authorIdValidator).withmessage('Invalid user'),
+    body('studentId').isMongoId().custom(authorIdValidator).withmessage('Invalid user'),
     body('questionResponses.*.questionId').isMongoId(),
-    body('questionResponses.*.answer').isString().isLength({ max: 255}),
+    body('questionResponses.*.answer').isMongoId(),
     (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });

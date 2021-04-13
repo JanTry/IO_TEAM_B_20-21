@@ -6,7 +6,7 @@ const questionResponseSchema = new Schema({
         required: true
     },
     answer: {
-        type: String,
+        type: Types.ObjectId,
         required: true,
     },
 });
@@ -17,7 +17,7 @@ const quizResponseSchema = new Schema(
             type: Types.ObjectId,
             required: true,
         },
-        authorId: {
+        studentId: {
             type: Types.ObjectId,
             required: true,
         },
