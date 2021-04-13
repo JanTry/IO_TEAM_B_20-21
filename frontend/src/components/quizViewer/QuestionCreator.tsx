@@ -36,17 +36,21 @@ const QuestionCreator: React.FunctionComponent = () => {
     setTitle(e.target.value);
   };
 
-  const onAnswerChanged = (id: number) => (e: ChangeEvent<HTMLInputElement>) => {
+  const onAnswerChanged = (index: number) => (e: ChangeEvent<HTMLInputElement>) => {
     if (answers !== undefined) {
       if (e.target.type === 'checkbox') {
         setAnswers([
-          ...answers.slice(0, id),
-          { ...answers[id], isCorrect: !answers[id].isCorrect },
-          ...answers.slice(id + 1),
+          ...answers.slice(0, index),
+          { ...answers[index], isCorrect: !answers[index].isCorrect },
+          ...answers.slice(index + 1),
         ]);
       }
       if (e.target.type === 'text') {
-        setAnswers([...answers.slice(0, id), { ...answers[id], data: e.target.value }, ...answers.slice(id + 1)]);
+        setAnswers([
+          ...answers.slice(0, index),
+          { ...answers[index], data: e.target.value },
+          ...answers.slice(index + 1),
+        ]);
       }
     }
   };
