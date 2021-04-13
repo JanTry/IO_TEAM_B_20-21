@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';

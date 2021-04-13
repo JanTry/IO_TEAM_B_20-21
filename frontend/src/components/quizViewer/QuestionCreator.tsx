@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { ChangeEvent, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';
@@ -28,7 +27,6 @@ const QuestionCreator: React.FunctionComponent = () => {
       updateCurrentQuestion({ title, answers });
     }
     e.preventDefault();
-
     toggleIsCreatingQuestion();
   };
 
