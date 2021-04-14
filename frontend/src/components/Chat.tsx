@@ -127,6 +127,15 @@ const Chat = () => {
     }
   }, [user]);
 
+  const handleMessageSubmition = (event: any) => {
+    event.preventDefault();
+
+    if (event.target.message.value) {
+      socket.emit('chat-message', event.target.message.value);
+      event.target.message.value = '';
+    }
+  };
+
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     console.log(event.target.a.value);
@@ -190,7 +199,7 @@ const Chat = () => {
             ))}
           </ListGroup>
 
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleMessageSubmition}>
             <div className="fixed-bottom w-50 p-2 bg-dark">
               <InputGroup>
                 <FormControl id="message" placeholder="enter message" />
