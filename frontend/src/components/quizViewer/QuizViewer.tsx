@@ -54,15 +54,15 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
       ) : (
         <div>
           <Button variant="primary" className="m-2 p-2" size="lg" onClick={onCreateQuestionClicked} block>
-            add question
+            Add question
           </Button>
           {didQuizUpdate && (
             <div>
               <Button variant="outline-success" className="m-2 p-2" onClick={onSaveChangesClicked} block>
-                save changes
+                Save changes
               </Button>
               <Button variant="outline-danger" className="m-2 p-2" onClick={onCancelClicked} block>
-                cancel
+                Cancel
               </Button>
             </div>
           )}
