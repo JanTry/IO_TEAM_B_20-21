@@ -12,6 +12,7 @@ import { authRoutes } from './routes/auth';
 import { sessionRoutes } from './routes/session';
 import { Session } from './database/models/session';
 import { quizRoutes } from './routes/quiz';
+import { quizResponseRoutes } from './routes/quizResponse';
 import { authMiddleware } from './middleware/auth';
 
 dbConnect();
@@ -33,6 +34,7 @@ app.use('/healthz', healthzRoutes);
 app.use('/auth', authRoutes);
 app.use('/session', authMiddleware, sessionRoutes);
 app.use('/quiz', authMiddleware, quizRoutes);
+app.use('/quizResponse', authMiddleware, quizResponseRoutes);
 
 type ChatSocket = Socket & {
   userID: string;
