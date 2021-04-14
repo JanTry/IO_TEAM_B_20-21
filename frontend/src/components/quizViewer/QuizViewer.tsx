@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';
 import Question, { QuestionValue } from './Question';
 import QuestionCreator from './QuestionCreator';
@@ -47,28 +47,28 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
   }, []);
 
   return (
-    <div>
+    <Container fluid className="vh-100 d-flex flex-column justify-content-center px-5 bg-light">
       {questions !== undefined && questions.map((question) => <Question question={question} key={question.title} />)}
       {isCreatingQuestion ? (
         <QuestionCreator />
       ) : (
         <div>
-          <Button variant="outline-primary" className="m-2 p-2" onClick={onCreateQuestionClicked}>
-            <p>add question</p>
+          <Button variant="primary" className="m-2 p-2" size="lg" onClick={onCreateQuestionClicked} block>
+            add question
           </Button>
           {didQuizUpdate && (
             <div>
-              <Button variant="outline-primary" className="m-2 p-2" onClick={onSaveChangesClicked}>
-                <p>save changes</p>
+              <Button variant="outline-success" className="m-2 p-2" onClick={onSaveChangesClicked} block>
+                save changes
               </Button>
-              <Button variant="outline-primary" className="m-2 p-2" onClick={onCancelClicked}>
-                <p>cancel</p>
+              <Button variant="outline-danger" className="m-2 p-2" onClick={onCancelClicked} block>
+                cancel
               </Button>
             </div>
           )}
         </div>
       )}
-    </div>
+    </Container>
   );
 };
 

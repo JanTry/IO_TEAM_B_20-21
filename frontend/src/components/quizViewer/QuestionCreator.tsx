@@ -58,23 +58,23 @@ const QuestionCreator: React.FunctionComponent = () => {
       <Form onSubmit={onSubmit}>
         <Form.Group onChange={onTitleChanged}>
           <Form.Label>Question title</Form.Label>
-          <Form.Control placeholder="email@example.com" />
+          <Form.Control placeholder="Enter question title" />
         </Form.Group>
         {answers !== undefined &&
           [...answers].map((_, i) => (
             <Form.Group onChange={onAnswerChanged(i)} key={i.toString()}>
               <Form.Label>Answer {i + 1}</Form.Label>
-              <Form.Control placeholder="answer" />
+              <Form.Control placeholder="Enter answer" />
               <Form.Check type="checkbox" label="Correct answer" />
             </Form.Group>
           ))}
-        <Button variant="primary" onClick={onAddAnswerPressed}>
+        <Button variant="primary" onClick={onAddAnswerPressed} block>
           Add Answer
         </Button>
-        <Button variant="primary" type="submit">
+        <Button variant="outline-success" type="submit" block>
           Save
         </Button>
-        <Button variant="primary" type="button" onClick={onCancelPressed}>
+        <Button variant="outline-danger" type="button" onClick={onCancelPressed} block>
           Cancel
         </Button>
       </Form>
