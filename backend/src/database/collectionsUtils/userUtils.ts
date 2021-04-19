@@ -34,7 +34,8 @@ export const populateUsersCollection = async (n = 10) => {
   for (let i = 1; i <= n; i++) {
     addUser({
       name: `NAME_${i}`,
-      surname: `SURNAME_${i}`,
+      firstName: `FIRSTNAME_${i}`,
+      lastName: `LASTNAME_${i}`,
       email: `EMAIL${i}`,
       password: `PASSWORD${i}`,
       role: `ROLE${i}`,
