@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { Form, Button, Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
 
@@ -14,17 +14,22 @@ const Dashboard = () => {
   const [accessCode, setAccessCode] = useState('');
   const { user, updateUserId, updateSessionId, updateAccessCode } = useUser();
 
+  useEffect(() => {
+    setUserId(`${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`);
+  }, []);
+
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+
     const result = await axios.get(`${baseUrl}validate/${sessionId}/${accessCode}`);
     if (result.data) {
+      sessionStorage.setItem('userId', userId);
+      sessionStorage.setItem('sessionId', sessionId);
+      sessionStorage.setItem('accessCode', accessCode);
       updateUserId(userId);
       updateSessionId(sessionId);
       updateAccessCode(accessCode);
-      history.push({
-        pathname: '/chat',
-        state: { userId, sessionId, accessCode },
-      });
+      history.push('/chat');
     } else {
       console.error('You shall not pass');
     }
@@ -32,11 +37,16 @@ const Dashboard = () => {
 
   const createNewSession = async (event: any) => {
     event.preventDefault();
+
     const result: any = await axios.post(baseUrl);
-    const fetchedAccessCode = result.data.accessCode;
-    const fetchedSessionId = result.data._id;
-    setSessionId(fetchedSessionId);
-    setAccessCode(fetchedAccessCode);
+
+    setSessionId(result.data._id);
+    setAccessCode(result.data.accessCode);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.clear();
+    history.push('/');
   };
 
   return (
@@ -44,7 +54,12 @@ const Dashboard = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="userID">
           <Form.Label>User id</Form.Label>
-          <Form.Control value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="Enter user id" />
+          <Form.Control
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            placeholder="Enter user id"
+            disabled
+          />
         </Form.Group>
 
         <Form.Group controlId="sessionID">
@@ -74,6 +89,10 @@ const Dashboard = () => {
             Create new session
           </Button>
         ) : null}
+
+        <Button variant="danger" type="button" onClick={handleLogout} block className="mb-5">
+          Log out
+        </Button>
       </Form>
     </Container>
   );

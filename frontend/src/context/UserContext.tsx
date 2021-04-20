@@ -1,21 +1,25 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, createContext, useContext, useCallback } from 'react';
+import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 interface User {
-  email: string;
-  role: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  role: string | null;
 }
 
 interface UserContextValue {
   user: User | null;
-  userId: string;
-  sessionId: string;
-  accessCode: string;
+  userId: string | null;
+  sessionId: string | null;
+  accessCode: string | null;
+  isLecturer: string | null;
   updateUser: (user: User | null) => void;
   updateUserId: (userId: string) => void;
   updateSessionId: (sessionId: string) => void;
   updateAccessCode: (accessCode: string) => void;
+  updateLecturer: (isLecturer: string | null) => void;
 }
 
 const UserContext = createContext<UserContextValue>({
@@ -23,18 +27,21 @@ const UserContext = createContext<UserContextValue>({
   userId: '',
   sessionId: '',
   accessCode: '',
+  isLecturer: null,
   updateUser: () => null,
   updateUserId: () => '',
   updateSessionId: () => '',
   updateAccessCode: () => '',
+  updateLecturer: () => null,
 });
 
 export const UserProvider: React.FunctionComponent = (props) => {
   const { children } = props;
   const [user, setUser] = useState<User | null>(null);
-  const [userId, setUserId] = useState('');
-  const [sessionId, setSessionId] = useState('');
-  const [accessCode, setAccessCode] = useState('');
+  const [userId, setUserId] = useState(sessionStorage.getItem('userId'));
+  const [sessionId, setSessionId] = useState(sessionStorage.getItem('sessionId'));
+  const [accessCode, setAccessCode] = useState(sessionStorage.getItem('accessCode'));
+  const [isLecturer, setLecturer] = useState<string | null>(sessionStorage.getItem('isLecturer'));
 
   const updateUser = useCallback((newUser: User | null) => {
     setUser(newUser);
@@ -49,8 +56,22 @@ export const UserProvider: React.FunctionComponent = (props) => {
   }, []);
 
   const updateAccessCode = useCallback((newAccessCode: string) => {
-    setAccessCode(accessCode);
+    setAccessCode(newAccessCode);
   }, []);
+
+  const updateLecturer = useCallback((lecturerFlag: string | null) => {
+    setLecturer(lecturerFlag);
+  }, []);
+
+  useEffect(() => {
+    updateUser({
+      firstName: sessionStorage.getItem('firstName'),
+      lastName: sessionStorage.getItem('lastName'),
+      email: sessionStorage.getItem('email'),
+      role: sessionStorage.getItem('role'),
+    });
+    updateLecturer(sessionStorage.getItem('isLecturer'));
+  }, [sessionStorage.getItem('isLecturer')]);
 
   return (
     <UserContext.Provider
@@ -59,10 +80,12 @@ export const UserProvider: React.FunctionComponent = (props) => {
         userId,
         sessionId,
         accessCode,
+        isLecturer,
         updateUser,
         updateUserId,
         updateSessionId,
         updateAccessCode,
+        updateLecturer,
       }}
     >
       {children}

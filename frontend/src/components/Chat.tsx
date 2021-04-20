@@ -42,9 +42,6 @@ const Chat = () => {
   const history = useHistory();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([] as string[]);
-  const [currentUserId, setCurrentUserId] = useState('');
-  const [currentSessionId, setCurrentSessionId] = useState('');
-  const [currentAccessCode, setCurrentAccessCode] = useState('');
   const [connected, setConnected] = useState(false);
 
   const [responseId, setResponseId] = useState('');
@@ -55,18 +52,12 @@ const Chat = () => {
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const { user, updateUserId, updateSessionId, updateAccessCode } = useUser();
+  const { user, userId, sessionId, accessCode } = useUser();
 
   useEffect(() => {
-    console.log(history.location.state);
-    const { userId, sessionId, accessCode } = history.location.state as { [key: string]: string };
-    setCurrentUserId(userId);
-    setCurrentSessionId(sessionId);
-    setCurrentAccessCode(accessCode);
-
-    updateUserId(currentUserId);
-    updateSessionId(currentSessionId);
-    updateAccessCode(currentAccessCode);
+    console.log(user);
+    console.log(sessionId);
+    console.log(accessCode);
 
     socket.emit('join', { userID: userId, sessionID: sessionId, accessCode }, (response: any) => {
       if (response.status === 'ok') {
@@ -184,9 +175,9 @@ const Chat = () => {
         </thead>
         <tbody>
           <tr>
-            <th>{currentUserId}</th>
-            <th>{currentSessionId}</th>
-            <th>{currentAccessCode}</th>
+            <th>{userId}</th>
+            <th>{sessionId}</th>
+            <th>{accessCode}</th>
             <th>{connected ? 'yes' : 'no'}</th>
           </tr>
         </tbody>
