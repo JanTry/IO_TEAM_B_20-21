@@ -18,7 +18,7 @@ const RegistrationForm = () => {
       });
 
       if (user) {
-        history.push('/login/student');
+        history.push('/login');
       }
 
       event.target.firstName.value = '';
@@ -60,7 +60,7 @@ const RegistrationForm = () => {
 
         <Form.Group>
           <Form.Text className="text-muted text-center">already have an account?</Form.Text>
-          <Link to="/login/student">
+          <Link to="/login">
             <button type="button" className="btn btn-outline-primary btn-block">
               sign in
             </button>

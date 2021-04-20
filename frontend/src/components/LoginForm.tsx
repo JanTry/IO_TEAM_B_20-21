@@ -70,7 +70,7 @@ const LoginForm = () => {
         {isLecturer === 'false' ? (
           <Form.Group className="mt-5">
             <Form.Text className="text-muted text-center">do not have an account yet?</Form.Text>
-            <Link to="/register/student">
+            <Link to="/register">
               <button type="button" className="btn btn-outline-primary btn-block">
                 sign up
               </button>
