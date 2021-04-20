@@ -29,13 +29,3 @@ export const printAllMessages = async () => {
 export const clearMessagesCollection = async () => {
   return (await Message.deleteMany({})).deletedCount;
 };
-
-export const populateMessagesCollection = async (n = 10) => {
-  for (let i = 1; i <= n; i++) {
-    addMessage({
-      senderName: 'Sender',
-      text: `MessageText_${i}`,
-    });
-  }
-  console.log(n, ' new messages added to messages');
-};

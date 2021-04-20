@@ -1,6 +1,6 @@
 import { model, Schema, Types } from 'mongoose';
 
-const responseSchema = new Schema(
+const questionResponseSchema = new Schema(
   {
     questionId: {
       type: Types.ObjectId,
@@ -15,24 +15,29 @@ const responseSchema = new Schema(
 );
 
 const quizResponseSchema = new Schema(
-  {
-    quizId: {
-      type: Types.ObjectId,
-      required: true,
+    {
+        quizId: {
+            type: Types.ObjectId,
+            required: true,
+        },
+        sessionId: {
+            type: Types.ObjectId,
+            required: true,
+        },
+        studentId: {
+            type: Types.ObjectId,
+            required: true,
+        },
+        questionResponses: {
+            type: [questionResponseSchema],
+            required: true,
+            default: [],
+        }
     },
-    studentId: {
-      type: Types.ObjectId,
-      required: true,
-    },
-    responses: {
-      type: [responseSchema],
-      required: true,
-      default: [],
-    },
-  },
-  {
-    collection: 'quizResponses',
-  }
-);
+    {
+      collection: 'quizResponses',
+    }
+)
 
+export const QuestionResponse = model('QuestionResponse', questionResponseSchema)
 export const QuizResponse = model('QuizResponse', quizResponseSchema);

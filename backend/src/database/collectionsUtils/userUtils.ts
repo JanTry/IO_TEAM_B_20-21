@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 
-import { User, UserType } from '../models/user';
+import { User, UserSchema, UserType } from '../models/user';
+// var random = require('mongoose-simple-random');
 
 export const addUser = async (userData: UserType) => {
   return new User(userData).save();
@@ -30,15 +31,3 @@ export const clearUsersCollection = async () => {
   return (await User.deleteMany({})).deletedCount;
 };
 
-export const populateUsersCollection = async (n = 10) => {
-  for (let i = 1; i <= n; i++) {
-    addUser({
-      firstName: `FIRSTNAME_${i}`,
-      lastName: `LASTNAME_${i}`,
-      email: `EMAIL${i}`,
-      password: `PASSWORD${i}`,
-      role: `ROLE${i}`,
-    });
-  }
-  console.log(n, ' new users added to users');
-};

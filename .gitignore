@@ -25,3 +25,4 @@ yarn-error.log*
 .idea/
 
 frontend/src/react-app-env.d.ts
+backend/package-lock.json
