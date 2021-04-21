@@ -12,17 +12,17 @@ const StudentDashboard = () => {
   const [accessCode, setAccessCode] = useState('');
 
   const handleSubmit = async (event: any) => {
-    event.preventDefault()
+    event.preventDefault();
     const result = await axios.get(`${baseUrl}validate/${sessionID}/${accessCode}`);
-    console.log(result)
+    console.log(result);
     if (result.data) {
       history.push({
-        pathname: "/student/chat",
-        state: { userID, sessionID, accessCode }
+        pathname: '/student/chat',
+        state: { userID, sessionID, accessCode },
       });
     } else {
-      console.error("You shall not pass")
-    };
+      console.error('You shall not pass');
+    }
   };
 
   const createNewSession = async (event: any) => {
@@ -36,17 +36,25 @@ const StudentDashboard = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="userID">
           <Form.Label>User id</Form.Label>
-          <Form.Control value={userID} onChange={e => setUserID(e.target.value)} placeholder="Enter user id" />
+          <Form.Control value={userID} onChange={(e) => setUserID(e.target.value)} placeholder="Enter user id" />
         </Form.Group>
 
         <Form.Group controlId="sessionID">
           <Form.Label>Session id</Form.Label>
-          <Form.Control value={sessionID} onChange={e => setSessionID(e.target.value)} placeholder="Enter session id" />
+          <Form.Control
+            value={sessionID}
+            onChange={(e) => setSessionID(e.target.value)}
+            placeholder="Enter session id"
+          />
         </Form.Group>
 
         <Form.Group controlId="userID">
           <Form.Label>Access code</Form.Label>
-          <Form.Control value={accessCode} onChange={e => setAccessCode(e.target.value)} placeholder="Enter access code" />
+          <Form.Control
+            value={accessCode}
+            onChange={(e) => setAccessCode(e.target.value)}
+            placeholder="Enter access code"
+          />
         </Form.Group>
 
         <Button variant="primary" type="submit" block className="mb-5">

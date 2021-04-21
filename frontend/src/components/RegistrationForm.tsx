@@ -1,6 +1,5 @@
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
 
 const StudentRegistration = () => {
   const handleSubmit = (event: any) => {
@@ -47,11 +46,11 @@ const StudentRegistration = () => {
         </Button>
 
         <Form.Group>
-          <Form.Text className="text-muted text-center">
-            already have an account?
-          </Form.Text>
+          <Form.Text className="text-muted text-center">already have an account?</Form.Text>
           <Link to="/login/student">
-            <button type="button" className="btn btn-outline-primary btn-block">sign in</button>
+            <button type="button" className="btn btn-outline-primary btn-block">
+              sign in
+            </button>
           </Link>
         </Form.Group>
       </Form>
