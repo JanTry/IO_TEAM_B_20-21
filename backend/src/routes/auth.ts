@@ -22,12 +22,14 @@ const publicKey = fs.readFileSync('resources/public.key');
 authRoutes.post("/register",
   body('email').isEmail(),
   body('password').isLength({min: 8}),
+  body('firstName').isLength({min: 2}),
+  body('lastName').isLength({min: 2}),
   body('role').custom(isValidRole),
   async (req, res) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) return res.status(400).json({errors: errors.array()});
 
-    const {email, role} = req.body
+    const {email, role, firstName, lastName} = req.body
     if (await User.findOne({email: req.body.email})) {
       return res.status(400).json({errors: [{email: "Email already exists."}]});
     }
@@ -36,7 +38,7 @@ authRoutes.post("/register",
     const salt = await bcrypt.genSalt(ROUNDS);
     const password = await bcrypt.hash(req.body.password, salt);
 
-    const user = new User({email, password, role});
+    const user = new User({email, password, role, firstName, lastName});
 
     const result = user.save((error, doc) => {
       if (error) {
@@ -63,6 +65,10 @@ authRoutes.post("/login",
       if (await bcrypt.compare(req.body.password, user.password)) {
         return res.status(200).json({
           succes: true,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role, 
+          email: user.email,
           token: jwt.sign({role: user.role, email: user.email}, privateKey, {algorithm: 'RS256'})
         });
       }

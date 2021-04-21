@@ -33,13 +33,8 @@ const LoginForm = () => {
       sessionStorage.setItem('jwt', response.token);
       sessionStorage.setItem('email', decodedUser.email);
       sessionStorage.setItem('role', decodedUser.role);
-
-      // sessionStorage.setItem('firstName', decodedUser.firstName);
-      // sessionStorage.setItem('lastName', decodedUser.lastName);
-
-      // hardcoded - waiting for backend c:
-      sessionStorage.setItem('firstName', 'Jan');
-      sessionStorage.setItem('lastName', 'Kowalski');
+      sessionStorage.setItem('firstName', decodedUser.firstName);
+      sessionStorage.setItem('lastName', decodedUser.lastName);
 
       history.push('/dashboard');
 
