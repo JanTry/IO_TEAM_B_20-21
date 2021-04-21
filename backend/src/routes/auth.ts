@@ -64,12 +64,8 @@ authRoutes.post("/login",
       if (!user) return res.status(400).json({errors: [{user: "This email doesn't match any user."}]});
       if (await bcrypt.compare(req.body.password, user.password)) {
         return res.status(200).json({
-          succes: true,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          role: user.role, 
-          email: user.email,
-          token: jwt.sign({role: user.role, email: user.email}, privateKey, {algorithm: 'RS256'})
+          success: true,
+          token: jwt.sign({role: user.role, email: user.email, firstName: user.firstName, lastName: user.lastName}, privateKey, {algorithm: 'RS256'})
         });
       }
       return res.status(400).json({errors: [{password: "Invalid password."}]});
