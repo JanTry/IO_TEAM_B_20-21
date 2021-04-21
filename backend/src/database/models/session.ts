@@ -1,16 +1,19 @@
-import * as mongoose from 'mongoose'
+import * as mongoose from 'mongoose';
 
-const sessionSchema = new mongoose.Schema({
+const sessionSchema = new mongoose.Schema(
+  {
     accessCode: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     online: {
-        type: Boolean,
-        required: true
+      type: Boolean,
+      required: true,
     },
-}, {
-    collection: 'sessions'
-})
+  },
+  {
+    collection: 'sessions',
+  }
+);
 
-export const Session = mongoose.model('Session', sessionSchema)
+export const Session = mongoose.model('Session', sessionSchema);
