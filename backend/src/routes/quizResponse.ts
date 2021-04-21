@@ -55,7 +55,6 @@ quizResponseRoutes.put(
       { $push: { responses: { questionId, answerId } } },
       null,
       (err, result) => {
-        console.log('dupa');
         if (err) {
           return res.status(500).send(err);
         }
