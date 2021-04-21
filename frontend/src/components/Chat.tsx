@@ -12,9 +12,10 @@ import {
   InputGroup,
   Form,
   FormControl,
-  Table,
   DropdownButton,
   Dropdown,
+  Navbar,
+  Nav,
 } from 'react-bootstrap';
 import { useUser } from '../context/UserContext';
 
@@ -146,48 +147,53 @@ const Chat = () => {
     socket.emit('end-quiz', 'koniec');
   };
 
+  const handleLogout = () => {
+    sessionStorage.clear();
+    history.push('/');
+  };
+
   return (
-    <Container fluid>
-      <Table className="sticky-top table-dark text-center">
-        <thead>
-          <tr>
-            <th>userID</th>
-            <th>sessionID</th>
-            <th>accessCode</th>
-            <th>connected</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>{userId}</th>
-            <th>{sessionId}</th>
-            <th>{accessCode}</th>
-            <th>{connected ? 'yes' : 'no'}</th>
-          </tr>
-        </tbody>
-      </Table>
-      <Row>
-        <Col className="m-2 vh-100">
-          <ListGroup>
+    <Container fluid className="px-0">
+      <Navbar bg="light" expand="lg" fixed="top">
+        <Navbar.Brand>Chat app</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+            <Navbar.Text className="mt-1 mx-2">
+              Session ID: <b>{sessionId}</b>
+            </Navbar.Text>
+            <Navbar.Text className="mt-1 mx-2">
+              Access code: <b>{accessCode}</b>
+            </Navbar.Text>
+          </Nav>
+          <Navbar.Text className="mt-1 mx-2">
+            Signed in as: <b>{userId}</b>
+          </Navbar.Text>
+          <Button variant="danger" size="sm" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Navbar.Collapse>
+      </Navbar>
+      <Row className="my-5">
+        <Col className="bg-secondary">
+          <ListGroup className="p-4 mx-0">
             {messages.map((msg) => (
               <ListGroup.Item className="pb-2">{msg}</ListGroup.Item>
             ))}
           </ListGroup>
 
-          <Form onSubmit={handleMessageSubmition}>
-            <div className="fixed-bottom w-50 p-2 bg-dark">
-              <InputGroup>
-                <FormControl id="message" placeholder="enter message" />
-                <InputGroup.Append>
-                  <Button type="submit" variant="success">
-                    send message
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-            </div>
+          <Form onSubmit={handleMessageSubmition} className="fixed-bottom w-50 p-2 bg-secondary">
+            <InputGroup>
+              <FormControl id="message" placeholder="enter message" />
+              <InputGroup.Append>
+                <Button type="submit" variant="success">
+                  send message
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
           </Form>
         </Col>
-        <Col className="p-2 vh-100">
+        <Col className="vh-100">
           {user && user.role === 'student' ? (
             <Container fluid className="vh-100 d-flex flex-column justify-content-center px-5">
               <Form onSubmit={handleSubmit}>
