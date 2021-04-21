@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 
 import express from 'express';
@@ -12,6 +13,7 @@ import { sessionRoutes } from './routes/session';
 import { Session } from './database/models/session';
 import { quizRoutes } from './routes/quiz';
 import { quizResponseRoutes } from './routes/quizResponse';
+import { authMiddleware } from './middleware/auth';
 
 dbConnect();
 
@@ -30,9 +32,9 @@ app.use(cors());
 app.use(express.json());
 app.use('/healthz', healthzRoutes);
 app.use('/auth', authRoutes);
-app.use('/session', sessionRoutes);
-app.use('/quiz', quizRoutes);
-app.use('/quizResponse', quizResponseRoutes);
+app.use('/session', authMiddleware, sessionRoutes);
+app.use('/quiz', authMiddleware, quizRoutes);
+app.use('/quizResponse', authMiddleware, quizResponseRoutes);
 
 type ChatSocket = Socket & {
   userID: string;
@@ -63,6 +65,16 @@ io.on('connection', (socket: ChatSocket) => {
         msg: "Session doesn't exist or it's offline.",
       });
     }
+  });
+
+  socket.on('start-quiz', (quizId) => {
+    console.log(quizId);
+    socket.to(socket.sessionID).emit('start-quiz', { quizId });
+  });
+
+  socket.on('end-quiz', (msg) => {
+    console.log(msg);
+    socket.to(socket.sessionID).emit('end-quiz');
   });
 
   socket.on('disconnect', () => {

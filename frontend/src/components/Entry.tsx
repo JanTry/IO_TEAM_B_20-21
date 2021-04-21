@@ -13,16 +13,6 @@ const Entry = () => (
         <h2>I am a student</h2>
       </Button>
     </Link>
-    <Link to="/student/dashboard">
-      <Button variant="outline-dark" className="m-4 p-5">
-        <h2>I wanna dance with somebody</h2>
-      </Button>
-    </Link>
-    <Link to="/quiz">
-      <Button variant="outline-dark" className="m-4 p-5">
-        <h2>quiz</h2>
-      </Button>
-    </Link>
   </Container>
 );
 

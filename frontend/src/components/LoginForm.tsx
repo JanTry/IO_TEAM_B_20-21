@@ -1,17 +1,54 @@
+/* eslint-disable no-unused-expressions */
+import { useCallback } from 'react';
+import { useHistory, Link } from 'react-router-dom';
 import { Form, Button, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import jwt from 'jwt-decode';
+import loginService from '../services/login';
+import { useUser } from '../context/UserContext';
 
-const LecturerLogin = (props: { isLecturer: boolean }) => {
+interface User {
+  email: string;
+  role: string;
+}
+
+const LoginForm = (props: { isLecturer: boolean }) => {
   const { isLecturer } = props;
-  const handleSubmit = (event: any) => {
+  const { updateUser } = useUser();
+  const history = useHistory();
+
+  const onUserChange = useCallback((userToUpdate: User) => {
+    updateUser(userToUpdate);
+  }, []);
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    console.log(event.target.email.value);
-    console.log(event.target.password.value);
 
-    // login logic
+    const credentials = {
+      email: event.target.email.value,
+      password: event.target.password.value,
+    };
 
-    event.target.email.value = '';
-    event.target.password.value = '';
+    try {
+      const response = await loginService.login(credentials);
+      console.log(response)
+      const decodedUser: { email: string; role: string } = jwt(response.token);
+
+      const userToUpdate: User = {
+        email: decodedUser.email,
+        role: decodedUser.role,
+      };
+
+      await onUserChange(userToUpdate);
+
+      window.localStorage.setItem('jwt', response.token);
+
+      props.isLecturer ? history.push('/lecturer/dashboard') : history.push('/student/dashboard');
+
+      event.target.email.value = '';
+      event.target.password.value = '';
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -46,4 +83,4 @@ const LecturerLogin = (props: { isLecturer: boolean }) => {
   );
 };
 
-export default LecturerLogin;
+export default LoginForm;
