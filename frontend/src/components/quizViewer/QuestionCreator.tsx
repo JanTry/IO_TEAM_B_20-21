@@ -1,63 +1,80 @@
-/* eslint-disable no-unused-vars */
-import React, { useCallback, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';
+import { AnswerValue } from './Question';
 
 const QuestionCreator: React.FunctionComponent = () => {
-  const { currentQuestion, isCreatingQuestion, clearCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
+  const { updateCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
 
-  const onSavePressed = useCallback(() => {
-    toggleIsCreatingQuestion();
-  }, []);
+  const [title, setTitle] = useState<string>('');
+  const [answers, setAnswers] = useState<AnswerValue[]>();
 
-  const onCancelPressed = useCallback(() => {
+  const onCancelPressed = () => {
     toggleIsCreatingQuestion();
-  }, []);
+  };
+
+  const onAddAnswerPressed = () => {
+    const newAnswer = { data: '', isCorrect: false };
+    if (answers === undefined) {
+      setAnswers([newAnswer]);
+    } else {
+      setAnswers([...answers, newAnswer]);
+    }
+  };
+
+  const onSubmit = (e: ChangeEvent<HTMLFormElement>) => {
+    if (title !== '' && answers !== undefined) {
+      updateCurrentQuestion({ title, answers });
+    }
+    e.preventDefault();
+    toggleIsCreatingQuestion();
+  };
+
+  const onTitleChanged = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const onAnswerChanged = (index: number) => (e: ChangeEvent<HTMLInputElement>) => {
+    if (answers !== undefined) {
+      if (e.target.type === 'checkbox') {
+        setAnswers([
+          ...answers.slice(0, index),
+          { ...answers[index], isCorrect: !answers[index].isCorrect },
+          ...answers.slice(index + 1),
+        ]);
+      }
+      if (e.target.type === 'text') {
+        setAnswers([
+          ...answers.slice(0, index),
+          { ...answers[index], data: e.target.value },
+          ...answers.slice(index + 1),
+        ]);
+      }
+    }
+  };
 
   return (
     <div>
-      <Form>
-        <Form.Group controlId="question">
-          <Form.Label>Question</Form.Label>
-          <Form.Control type="text" placeholder="Enter question" />
+      <Form onSubmit={onSubmit}>
+        <Form.Group onChange={onTitleChanged}>
+          <Form.Label>Question title</Form.Label>
+          <Form.Control placeholder="Enter question title" />
         </Form.Group>
-
-        <Form.Group controlId="a-answer">
-          <Form.Label>Answer a</Form.Label>
-          <Form.Control type="text" placeholder="Enter answer a" />
-          <Form.Group controlId="formBasicCheckboxA">
-            <Form.Check type="checkbox" label="Correct answer" />
-          </Form.Group>
-        </Form.Group>
-
-        <Form.Group controlId="b-answer">
-          <Form.Label>Answer b</Form.Label>
-          <Form.Control type="text" placeholder="Enter answer b" />
-          <Form.Group controlId="formBasicCheckboxB">
-            <Form.Check type="checkbox" label="Correct answer" />
-          </Form.Group>
-        </Form.Group>
-
-        <Form.Group controlId="c-answer">
-          <Form.Label>Answer c</Form.Label>
-          <Form.Control type="text" placeholder="Enter answer c" />
-          <Form.Group controlId="formBasicCheckboxC">
-            <Form.Check type="checkbox" label="Correct answer" />
-          </Form.Group>
-        </Form.Group>
-
-        <Form.Group controlId="d-answer">
-          <Form.Label>Answer d</Form.Label>
-          <Form.Control type="text" placeholder="Enter answer d" />
-          <Form.Group controlId="formBasicCheckboxD">
-            <Form.Check type="checkbox" label="Correct answer" />
-          </Form.Group>
-        </Form.Group>
-
-        <Button variant="outline-success" type="submit" block onClick={onSavePressed}>
+        {answers !== undefined &&
+          [...answers].map((_, i) => (
+            <Form.Group onChange={onAnswerChanged(i)} key={i.toString()}>
+              <Form.Label>Answer {i + 1}</Form.Label>
+              <Form.Control placeholder="Enter answer" />
+              <Form.Check type="checkbox" label="Correct answer" />
+            </Form.Group>
+          ))}
+        <Button variant="primary" onClick={onAddAnswerPressed} block>
+          Add Answer
+        </Button>
+        <Button variant="outline-success" type="submit" block>
           Save
         </Button>
-        <Button variant="outline-danger" type="submit" block onClick={onCancelPressed}>
+        <Button variant="outline-danger" type="button" onClick={onCancelPressed} block>
           Cancel
         </Button>
       </Form>

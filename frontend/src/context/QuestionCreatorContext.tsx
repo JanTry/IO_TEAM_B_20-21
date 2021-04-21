@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { QuestionValue } from '../components/quizViewer/Question';
@@ -34,7 +33,7 @@ export const QuestionCreatorProvider: React.FunctionComponent = (props) => {
 
   const toggleIsCreatingQuestion = useCallback(() => {
     setIsCreatingQuestion(!isCreatingQuestion);
-  }, []);
+  }, [isCreatingQuestion]);
 
   return (
     <QuestionCreatorContext.Provider
@@ -53,10 +52,6 @@ export const QuestionCreatorProvider: React.FunctionComponent = (props) => {
 
 QuestionCreatorProvider.propTypes = {
   children: PropTypes.node,
-};
-
-QuestionCreatorProvider.defaultProps = {
-  children: null,
 };
 
 export const useQuestionCreator = (): QuestionCreatorContextValue => useContext(QuestionCreatorContext);

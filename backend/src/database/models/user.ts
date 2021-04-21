@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 
 export interface UserType {
-  name?: string;
-  surname?: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   password: string;
   role: string;
@@ -10,12 +10,12 @@ export interface UserType {
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
       required: false,
     },
-    surname: {
-      type: String,
+    lastName: {
+      type: String, 
       required: false,
     },
     email: {

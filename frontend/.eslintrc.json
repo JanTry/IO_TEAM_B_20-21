@@ -34,6 +34,8 @@
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": ["error"],
     "import/extensions": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+      "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "warn"
   }
 }
