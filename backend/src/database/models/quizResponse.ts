@@ -1,34 +1,38 @@
 import { model, Schema, Types } from 'mongoose';
 
-const questionResponseSchema = new Schema({
+const responseSchema = new Schema(
+  {
     questionId: {
-        type: Types.ObjectId,
-        required: true
+      type: Types.ObjectId,
+      required: true,
     },
-    answer: {
-        type: Types.ObjectId,
-        required: true,
+    answerId: {
+      type: Types.ObjectId,
+      required: true,
     },
-});
+  },
+  { _id: false }
+);
 
 const quizResponseSchema = new Schema(
-    {
-        quizId: {
-            type: Types.ObjectId,
-            required: true,
-        },
-        studentId: {
-            type: Types.ObjectId,
-            required: true,
-        },
-        questionResponses: {
-            type: [questionResponseSchema]
-        }
+  {
+    quizId: {
+      type: Types.ObjectId,
+      required: true,
     },
-    {
-      collection: 'quizResponses',
-    }
-)
-
+    studentId: {
+      type: Types.ObjectId,
+      required: true,
+    },
+    responses: {
+      type: [responseSchema],
+      required: true,
+      default: [],
+    },
+  },
+  {
+    collection: 'quizResponses',
+  }
+);
 
 export const QuizResponse = model('QuizResponse', quizResponseSchema);

@@ -1,21 +1,31 @@
-import { Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
+import { useHistory, Link } from 'react-router-dom';
+import registerService from '../services/register';
 
-const StudentRegistration = () => {
-  const handleSubmit = (event: any) => {
+const RegistrationForm = () => {
+  const history = useHistory();
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    console.log(event.target.firstname.value);
-    console.log(event.target.lastname.value);
-    console.log(event.target.email.value);
-    console.log(event.target.password.value);
 
-    // registration logic
+    const credentials = {
+      email: event.target.email.value,
+      password: event.target.password.value,
+      role: 'student',
+    };
 
-    event.target.firstname.value = '';
-    event.target.lastname.value = '';
-    event.target.email.value = '';
-    event.target.password.value = '';
+    try {
+      const user = await registerService.register(credentials);
+
+      if (user) {
+        history.push('/login/student');
+      }
+
+      event.target.email.value = '';
+      event.target.password.value = '';
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -47,11 +57,11 @@ const StudentRegistration = () => {
         </Button>
 
         <Form.Group>
-          <Form.Text className="text-muted text-center">
-            already have an account?
-          </Form.Text>
+          <Form.Text className="text-muted text-center">already have an account?</Form.Text>
           <Link to="/login/student">
-            <button type="button" className="btn btn-outline-primary btn-block">sign in</button>
+            <button type="button" className="btn btn-outline-primary btn-block">
+              sign in
+            </button>
           </Link>
         </Form.Group>
       </Form>
@@ -59,4 +69,4 @@ const StudentRegistration = () => {
   );
 };
 
-export default StudentRegistration;
+export default RegistrationForm;

@@ -1,0 +1,75 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { Button, Container } from 'react-bootstrap';
+import { useQuestionCreator } from '../../context/QuestionCreatorContext';
+import Question, { QuestionValue } from './Question';
+import QuestionCreator from './QuestionCreator';
+
+interface QuizViewerProps {
+  quizId?: number | undefined;
+}
+
+const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerProps) => {
+  const { quizId } = props;
+  const { currentQuestion, isCreatingQuestion, clearCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
+  const [questions, setQuestions] = useState<QuestionValue[]>();
+  const [didQuizUpdate, setDidQuizUpdate] = useState(false);
+
+  useEffect(() => {
+    if (quizId !== undefined) {
+      // fetch quiz from db && setQuestions(result)
+    }
+  });
+
+  useEffect(() => {
+    // update questions with currentQuestion
+    if (currentQuestion !== undefined && currentQuestion !== null) {
+      if (questions !== undefined) {
+        setQuestions([...questions, currentQuestion]);
+      } else {
+        setQuestions([currentQuestion]);
+      }
+      clearCurrentQuestion();
+      setDidQuizUpdate(true);
+    }
+  }, [currentQuestion]);
+
+  const onCreateQuestionClicked = useCallback(async () => {
+    toggleIsCreatingQuestion();
+  }, []);
+
+  const onSaveChangesClicked = useCallback(async () => {
+    // save changes to db
+    const url = 'http://localhost:4000/quiz';
+  }, []);
+
+  const onCancelClicked = useCallback(() => {
+    // if quizId undefined exit else view old
+  }, []);
+
+  return (
+    <Container fluid className="vh-100 d-flex flex-column justify-content-center px-5 bg-light">
+      {questions !== undefined && questions.map((question) => <Question question={question} key={question.title} />)}
+      {isCreatingQuestion ? (
+        <QuestionCreator />
+      ) : (
+        <div>
+          <Button variant="primary" className="m-2 p-2" size="lg" onClick={onCreateQuestionClicked} block>
+            Add question
+          </Button>
+          {didQuizUpdate && (
+            <div>
+              <Button variant="outline-success" className="m-2 p-2" onClick={onSaveChangesClicked} block>
+                Save changes
+              </Button>
+              <Button variant="outline-danger" className="m-2 p-2" onClick={onCancelClicked} block>
+                Cancel
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+    </Container>
+  );
+};
+
+export default QuizViewer;
