@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Container, Button, ButtonGroup } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';
 import Question, { QuestionValue } from './Question';
 import QuestionCreator from './QuestionCreator';
@@ -66,7 +66,7 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
               </Button>
             </div>
           )}
-        </Container>
+        </div>
       )}
     </Container>
   );

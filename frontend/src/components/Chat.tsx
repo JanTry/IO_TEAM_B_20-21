@@ -1,6 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -58,7 +56,6 @@ const Chat = () => {
   const { user, updateUserId, updateSessionId, updateAccessCode } = useUser();
 
   useEffect(() => {
-    console.log(history.location.state);
     const { userId, sessionId, accessCode } = history.location.state as { [key: string]: string };
     setCurrentUserId(userId);
     setCurrentSessionId(sessionId);
@@ -71,8 +68,6 @@ const Chat = () => {
     socket.emit('join', { userID: userId, sessionID: sessionId, accessCode }, (response: any) => {
       if (response.status === 'ok') {
         setConnected(true);
-      } else {
-        console.error(response.msg);
       }
     });
   }, [history.location.state]);
@@ -84,8 +79,6 @@ const Chat = () => {
 
       const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
       setQuestions(result.data);
-      console.log(result.data.questions);
-      console.log(result.data.questions[0]);
       setQuestion(result.data.questions[0]);
     };
 
@@ -138,14 +131,12 @@ const Chat = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    console.log(event.target.a.value);
-    const result = await axios.put(`${baseUrl}/quizResponse`, {
+    await axios.put(`${baseUrl}/quizResponse`, {
       quizResponseId: responseId,
       quizId,
       questionId: question._id,
       answerId: event.target.a.value,
     });
-    console.log(result.data);
     if (questions.length > 1) {
       setQuestion(questions[1]);
       setQuestions(questions.slice(1));
@@ -165,10 +156,6 @@ const Chat = () => {
 
   const handleQuizEnd = () => {
     socket.emit('end-quiz', 'koniec');
-  };
-
-  const handleAnswerSelect = (event: any) => {
-    console.log(event);
   };
 
   return (
