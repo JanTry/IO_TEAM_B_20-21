@@ -23,15 +23,9 @@ const App = () => (
     <Switch>
       <UserProvider>
         <Route exact path="/" component={Entry} />
-        <Route exact path="/login/lecturer">
-          <LoginForm isLecturer />
-        </Route>
-        <Route exact path="/login/student">
-          <LoginForm isLecturer={false} />
-        </Route>
-        <Route exact path="/register/student" component={RegistrationForm} />
-        <Route exact path="/student/dashboard" component={Dashboard} />
-        <Route exact path="/lecturer/dashboard" component={Dashboard} />
+        <Route exact path="/login" component={LoginForm} />
+        <Route exact path="/register" component={RegistrationForm} />
+        <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/chat" component={Chat} />
         <Route exact path="/quiz">
           <QuestionCreatorProvider>
