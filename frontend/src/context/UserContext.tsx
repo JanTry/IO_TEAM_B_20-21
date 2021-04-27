@@ -7,16 +7,17 @@ interface User {
   lastName: string | null;
   email: string | null;
   role: string | null;
+  userId: string | null;
 }
 
 interface UserContextValue {
   user: User | null;
-  userId: string | null;
+  username: string | null;
   sessionId: string | null;
   accessCode: string | null;
   isLecturer: string | null;
   updateUser: (user: User | null) => void;
-  updateUserId: (userId: string) => void;
+  updateUsername: (username: string) => void;
   updateSessionId: (sessionId: string) => void;
   updateAccessCode: (accessCode: string) => void;
   updateLecturer: (isLecturer: string | null) => void;
@@ -24,12 +25,12 @@ interface UserContextValue {
 
 const UserContext = createContext<UserContextValue>({
   user: null,
-  userId: '',
+  username: '',
   sessionId: '',
   accessCode: '',
   isLecturer: null,
   updateUser: () => null,
-  updateUserId: () => '',
+  updateUsername: () => '',
   updateSessionId: () => '',
   updateAccessCode: () => '',
   updateLecturer: () => null,
@@ -38,7 +39,7 @@ const UserContext = createContext<UserContextValue>({
 export const UserProvider: React.FunctionComponent = (props) => {
   const { children } = props;
   const [user, setUser] = useState<User | null>(null);
-  const [userId, setUserId] = useState(sessionStorage.getItem('userId'));
+  const [username, setUsername] = useState(sessionStorage.getItem('username'));
   const [sessionId, setSessionId] = useState(sessionStorage.getItem('sessionId'));
   const [accessCode, setAccessCode] = useState(sessionStorage.getItem('accessCode'));
   const [isLecturer, setLecturer] = useState<string | null>(sessionStorage.getItem('isLecturer'));
@@ -47,8 +48,8 @@ export const UserProvider: React.FunctionComponent = (props) => {
     setUser(newUser);
   }, []);
 
-  const updateUserId = useCallback((newUserId: string) => {
-    setUserId(newUserId);
+  const updateUsername = useCallback((newUsername: string) => {
+    setUsername(newUsername);
   }, []);
 
   const updateSessionId = useCallback((newSessionId: string) => {
@@ -69,6 +70,7 @@ export const UserProvider: React.FunctionComponent = (props) => {
       lastName: sessionStorage.getItem('lastName'),
       email: sessionStorage.getItem('email'),
       role: sessionStorage.getItem('role'),
+      userId: sessionStorage.getItem('userId'),
     });
     updateLecturer(sessionStorage.getItem('isLecturer'));
   }, [sessionStorage.getItem('isLecturer')]);
@@ -77,12 +79,12 @@ export const UserProvider: React.FunctionComponent = (props) => {
     <UserContext.Provider
       value={{
         user,
-        userId,
+        username,
         sessionId,
         accessCode,
         isLecturer,
         updateUser,
-        updateUserId,
+        updateUsername,
         updateSessionId,
         updateAccessCode,
         updateLecturer,

@@ -58,10 +58,10 @@ const Chat = () => {
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const { user, userId, sessionId, accessCode } = useUser();
+  const { user, username, sessionId, accessCode } = useUser();
 
   useEffect(() => {
-    socket.emit('join', { userID: userId, sessionID: sessionId, accessCode }, (response: any) => {
+    socket.emit('join', { userID: username, sessionID: sessionId, accessCode }, (response: any) => {
       if (response.status === 'ok') {
         setConnected(true);
       }
@@ -178,7 +178,7 @@ const Chat = () => {
             </Navbar.Text>
           </Nav>
           <Navbar.Text className="mt-1 mx-2">
-            Signed in as: <b>{userId}</b>
+            Signed in as: <b>{username}</b>
           </Navbar.Text>
           <Button variant="danger" size="sm" onClick={handleLogout}>
             Logout

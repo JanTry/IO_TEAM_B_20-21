@@ -10,6 +10,7 @@ interface User {
   lastName: string;
   email: string;
   role: string;
+  userId: string;
 }
 
 const LoginForm = () => {
@@ -35,6 +36,7 @@ const LoginForm = () => {
       sessionStorage.setItem('role', decodedUser.role);
       sessionStorage.setItem('firstName', decodedUser.firstName);
       sessionStorage.setItem('lastName', decodedUser.lastName);
+      sessionStorage.setItem('userId', decodedUser.userId);
 
       history.push('/dashboard');
 

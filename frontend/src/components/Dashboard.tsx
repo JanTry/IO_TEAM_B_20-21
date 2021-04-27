@@ -9,13 +9,13 @@ const baseUrl = 'http://localhost:4000/session/';
 
 const Dashboard = () => {
   const history = useHistory();
-  const [userId, setUserId] = useState('');
+  const [username, setUsername] = useState('');
   const [sessionId, setSessionId] = useState('');
   const [accessCode, setAccessCode] = useState('');
-  const { user, updateUserId, updateSessionId, updateAccessCode } = useUser();
+  const { user, updateUsername, updateSessionId, updateAccessCode } = useUser();
 
   useEffect(() => {
-    setUserId(`${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`);
+    setUsername(`${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`);
   }, []);
 
   const handleSubmit = async (event: any) => {
@@ -23,10 +23,10 @@ const Dashboard = () => {
 
     const result = await axios.get(`${baseUrl}validate/${sessionId}/${accessCode}`);
     if (result.data) {
-      sessionStorage.setItem('userId', userId);
+      sessionStorage.setItem('username', username);
       sessionStorage.setItem('sessionId', sessionId);
       sessionStorage.setItem('accessCode', accessCode);
-      updateUserId(userId);
+      updateUsername(username);
       updateSessionId(sessionId);
       updateAccessCode(accessCode);
       history.push('/chat');
@@ -55,8 +55,8 @@ const Dashboard = () => {
         <Form.Group controlId="userID">
           <Form.Label>User id</Form.Label>
           <Form.Control
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter user id"
             disabled
           />
