@@ -155,7 +155,7 @@ const Chat = () => {
   return (
     <Container fluid className="px-0">
       <Navbar bg="light" expand="lg" fixed="top">
-        <Navbar.Brand>Chat app</Navbar.Brand>
+        <Navbar.Brand>Studentoaktywizator 3000</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
