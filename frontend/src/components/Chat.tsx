@@ -53,6 +53,7 @@ const Chat = () => {
 
   const [quizId, setQuizId] = useState('');
   const [quizes, setQuizes] = useState([] as Quiz[]);
+  const [chosenQuiz, setChosenQuiz] = useState('');
 
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -143,6 +144,10 @@ const Chat = () => {
 
   const handleQuizIdSelect = (event: any) => {
     setQuizId(event);
+    const filteredQuiz = quizes.find((quiz) => quiz.id === event);
+    if (filteredQuiz) {
+      setChosenQuiz(filteredQuiz.name);
+    }
   };
 
   const handleQuizStart = () => {
@@ -220,33 +225,39 @@ const Chat = () => {
             </Container>
           ) : (
             <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center px-5">
-              {quizes.length === 0 ? <h2>nie wybrałeś jeszcze quizu byczku</h2> : null}
-
-              <DropdownButton className="m-4" id="dropdown-basic-button" title="Choose quiz">
-                {quizes.map((quiz) => (
-                  <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={quiz.id}>
-                    {quiz.name} - number of questions: {quiz.questions}
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-
-              {quizId !== '' ? (
+              {quizes.length === 0 ? (
                 <div>
-                  <h3>wybrany quiz: quiz</h3>
+                  <h4>You do not have a single quiz in your collection!</h4>
+                  <Link to="/quiz" className="m-4">
+                    <Button variant="primary" block>
+                      Create new quiz
+                    </Button>
+                  </Link>
                 </div>
-              ) : null}
+              ) : (
+                <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center px-5">
+                  {quizId !== '' ? (
+                    <div>
+                      <h4>chosen quiz: {chosenQuiz}</h4>
+                    </div>
+                  ) : null}
 
-              <Link to="/quiz" className="m-4">
-                <Button variant="primary" block>
-                  Create new quiz
-                </Button>
-              </Link>
-              <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizStart} block>
-                Start quiz
-              </Button>
-              <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizEnd} block>
-                End quiz
-              </Button>
+                  <DropdownButton className="m-4" id="dropdown-basic-button" title="Choose quiz">
+                    {quizes.map((quiz) => (
+                      <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={quiz.id}>
+                        {quiz.name} - number of questions: {quiz.questions}
+                      </Dropdown.Item>
+                    ))}
+                  </DropdownButton>
+
+                  <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizStart} block>
+                    Start quiz
+                  </Button>
+                  <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizEnd} block>
+                    End quiz
+                  </Button>
+                </Container>
+              )}
             </Container>
           )}
         </Col>
