@@ -75,7 +75,7 @@ const Chat = () => {
 
       const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
       setQuestions(result.data);
-      setQuestion(result.data.questions[0]);
+      setQuestion(result.data[0]);
     };
 
     socket.on('start-quiz', (data: any) => {
