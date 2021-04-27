@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
 import {
@@ -37,6 +37,12 @@ interface Question {
   }>;
 }
 
+interface Quiz {
+  id: string;
+  name: string;
+  questions: Number;
+}
+
 const Chat = () => {
   const history = useHistory();
   const [message, setMessage] = useState('');
@@ -46,7 +52,7 @@ const Chat = () => {
   const [responseId, setResponseId] = useState('');
 
   const [quizId, setQuizId] = useState('');
-  const [quizIds, setQuizIds] = useState([] as string[]);
+  const [quizes, setQuizes] = useState([] as Quiz[]);
 
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -100,7 +106,7 @@ const Chat = () => {
     const fetchData = async () => {
       const result = await axios.get(`${baseUrl}/quiz`);
       if (result.data) {
-        setQuizIds(result.data);
+        setQuizes(result.data);
       }
     };
 
@@ -177,8 +183,8 @@ const Chat = () => {
       <Row className="my-5">
         <Col className="bg-secondary">
           <ListGroup className="p-4 mx-0">
-            {messages.map((msg) => (
-              <ListGroup.Item className="pb-2">{msg}</ListGroup.Item>
+            {messages.map((msg, i) => (
+              <ListGroup.Item className="pb-2" eventKey={String(i)}>{msg}</ListGroup.Item>
             ))}
           </ListGroup>
 
@@ -214,14 +220,27 @@ const Chat = () => {
             </Container>
           ) : (
             <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center px-5">
-              <DropdownButton className="m-4" id="dropdown-basic-button" title="wybierz quiz">
-                {quizIds.map((id) => (
-                  <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={id}>
-                    {id}
+              {quizes.length === 0 ? <h2>nie wybrałeś jeszcze quizu byczku</h2> : null}
+
+              <DropdownButton className="m-4" id="dropdown-basic-button" title="Choose quiz">
+                {quizes.map((quiz) => (
+                  <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={quiz.id}>
+                    {quiz.name} - number of questions: {quiz.questions}
                   </Dropdown.Item>
                 ))}
               </DropdownButton>
 
+              {quizId !== '' ? (
+                <div>
+                  <h3>wybrany quiz: quiz</h3>
+                </div>
+              ) : null}
+
+              <Link to="/quiz" className="m-4">
+                <Button variant="primary" block>
+                  Create new quiz
+                </Button>
+              </Link>
               <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizStart} block>
                 Start quiz
               </Button>
