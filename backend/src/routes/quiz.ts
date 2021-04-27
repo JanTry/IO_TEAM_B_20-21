@@ -1,15 +1,29 @@
 import express from 'express';
 import { body, CustomValidator, validationResult } from 'express-validator';
+import { Document } from 'mongoose';
 import { Quiz } from '../database/models/quiz';
 
 export const quizRoutes = express.Router();
 
+type QuizModel = Document & {
+  quizName: string;
+  questions: any[];
+};
+
 quizRoutes.get('/', (req, res) => {
-  Quiz.find({ authorId: res.locals.user._id }, { _id: 1 }, null, (err, results) => {
+  Quiz.find({ authorId: res.locals.user._id }, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.status(200).send(results.map((elem) => elem._id));
+      res.status(200).send(
+        results.map((elem: QuizModel) => {
+          return {
+            id: elem._id,
+            name: elem.quizName,
+            questions: elem.questions.length,
+          };
+        })
+      );
     }
   });
 });
@@ -31,6 +45,7 @@ const atLeastOneValid: CustomValidator = (answers) => {
 
 quizRoutes.post(
   '/',
+  body('quizName').isString().isLength({ min: 0, max: 100 }),
   body('questions.*.title').isString().isLength({ max: 255 }),
   body('questions.*.points').isInt({ min: 0, max: 100 }),
   body('questions.*.answers.*.data').isString().isLength({ max: 255 }),

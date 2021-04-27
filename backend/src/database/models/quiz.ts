@@ -32,6 +32,10 @@ const quizSchema = new Schema(
       type: Types.ObjectId,
       required: true,
     },
+    quizName: {
+      type: String,
+      required: true,
+    },
     questions: {
       type: [questionSchema],
       required: true,
