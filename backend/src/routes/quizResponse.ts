@@ -33,7 +33,7 @@ const sessionIdValidator: CustomValidator = async (sessionId) => {
       else reject();
     });
   });
-}
+};
 
 const studentIdValidator: CustomValidator = async (studentId) => {
   return new Promise<void>((resolve, reject) => {
@@ -42,7 +42,7 @@ const studentIdValidator: CustomValidator = async (studentId) => {
       else reject();
     });
   });
-}
+};
 
 quizResponseRoutes.post(
   '/',

@@ -19,7 +19,7 @@ import { populateDatabase } from './database/dbPopulate';
 dbConnect();
 
 // UNCOMMENT FOLLOWING LINE FOR DATABASE POPULATION
-// populateDatabase();
+populateDatabase();
 
 dotenv.config();
 

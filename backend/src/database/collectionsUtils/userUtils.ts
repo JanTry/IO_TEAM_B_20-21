@@ -29,4 +29,3 @@ export const printAllUsers = async () => {
 export const clearUsersCollection = async () => {
   return (await User.deleteMany({})).deletedCount;
 };
-

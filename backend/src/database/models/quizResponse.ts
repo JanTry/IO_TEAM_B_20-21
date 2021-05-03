@@ -15,29 +15,29 @@ const questionResponseSchema = new Schema(
 );
 
 const quizResponseSchema = new Schema(
-    {
-        quizId: {
-            type: Types.ObjectId,
-            required: true,
-        },
-        sessionId: {
-            type: Types.ObjectId,
-            required: true,
-        },
-        studentId: {
-            type: Types.ObjectId,
-            required: true,
-        },
-        questionResponses: {
-            type: [questionResponseSchema],
-            required: true,
-            default: [],
-        }
+  {
+    quizId: {
+      type: Types.ObjectId,
+      required: true,
     },
-    {
-      collection: 'quizResponses',
-    }
-)
+    sessionId: {
+      type: Types.ObjectId,
+      required: true,
+    },
+    studentId: {
+      type: Types.ObjectId,
+      required: true,
+    },
+    questionResponses: {
+      type: [questionResponseSchema],
+      required: true,
+      default: [],
+    },
+  },
+  {
+    collection: 'quizResponses',
+  }
+);
 
-export const QuestionResponse = model('QuestionResponse', questionResponseSchema)
+export const QuestionResponse = model('QuestionResponse', questionResponseSchema);
 export const QuizResponse = model('QuizResponse', quizResponseSchema);
