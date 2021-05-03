@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
-import { User, UserSchema, UserType } from '../models/user';
-// var random = require('mongoose-simple-random');
+import { User, UserType } from '../models/user';
 
 export const addUser = async (userData: UserType) => {
   return new User(userData).save();
