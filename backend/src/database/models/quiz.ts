@@ -7,7 +7,7 @@ const answerSchema = new Schema({
   },
   isCorrect: {
     type: Boolean,
-    reruired: true,
+    required: true,
   },
 });
 
@@ -47,3 +47,20 @@ const quizSchema = new Schema(
 );
 
 export const Quiz = model('Quiz', quizSchema);
+
+export interface Question {
+  _id: string;
+  title: string;
+  points: number;
+  answers: {
+    _id: string;
+    data: string;
+    isCorrect: boolean;
+  }[];
+}
+
+export interface QuizModel {
+  _id: string;
+  quizName: string;
+  questions: Question[];
+}

@@ -14,6 +14,7 @@ import { Session } from './database/models/session';
 import { quizRoutes } from './routes/quiz';
 import { quizResponseRoutes } from './routes/quizResponse';
 import { authMiddleware } from './middleware/auth';
+import { QuizResponse } from './database/models/quizResponse';
 
 dbConnect();
 
@@ -72,9 +73,10 @@ io.on('connection', (socket: ChatSocket) => {
     socket.to(socket.sessionId).emit('start-quiz', { quizId });
   });
 
-  socket.on('end-quiz', (msg) => {
-    console.log(msg);
-    socket.to(socket.sessionId).emit('end-quiz');
+  socket.on('end-quiz', (quizId) => {
+    QuizResponse.updateMany({ sessionId: socket.sessionId, quizId }, { $set: { isEnded: true } }, null, () =>
+      socket.to(socket.sessionId).emit('end-quiz')
+    );
   });
 
   socket.on('disconnect', () => {
