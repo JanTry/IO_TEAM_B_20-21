@@ -73,7 +73,7 @@ const Chat = () => {
   useEffect(() => {
     if (user) {
       const fetchQuizData = async (id: string) => {
-        const responseResult = await axios.post(`${baseUrl}/quizResponse`, { quizId: id });
+        const responseResult = await axios.post(`${baseUrl}/quizResponse`, { quizId: id, sessionId });
         setResponseId(responseResult.data.id);
 
         const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
@@ -160,7 +160,7 @@ const Chat = () => {
   };
 
   const handleQuizEnd = () => {
-    socket.emit('end-quiz', 'koniec');
+    socket.emit('end-quiz', quizId);
   };
 
   const handleLogout = () => {
