@@ -58,11 +58,13 @@ const Chat = () => {
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  const [quizMessage, setQuizMessage] = useState('');
+
   const { user, username, sessionId, accessCode } = useUser();
 
   useEffect(() => {
     if (user) {
-      socket.emit('join', { userId: user.userId, sessionId }, (response: any) => {
+      socket.emit('join', { userId: username, sessionId }, (response: any) => {
         if (response.status === 'ok') {
           setConnected(true);
         }
@@ -75,6 +77,7 @@ const Chat = () => {
       const fetchQuizData = async (id: string) => {
         const responseResult = await axios.post(`${baseUrl}/quizResponse`, { quizId: id, sessionId });
         setResponseId(responseResult.data.id);
+        sessionStorage.setItem('responseId', responseResult.data.id);
 
         const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
         setQuestions(result.data);
@@ -85,12 +88,24 @@ const Chat = () => {
         if (user.role === 'student') {
           setQuizId(data.quizId);
           fetchQuizData(data.quizId);
+          setQuizMessage('');
         }
       });
+
+      const fetchQuizResponse = async () => {
+        const resId = sessionStorage.getItem('responseId');
+
+        const response = await axios.get(`${baseUrl}/quizResponse/points/${resId}`);
+        sessionStorage.setItem('points', response.data.points);
+      };
 
       socket.on('end-quiz', () => {
         setQuestions([]);
         setQuestion({ _id: '', title: '', answers: [] });
+        fetchQuizResponse();
+
+        const points = sessionStorage.getItem('points');
+        setQuizMessage(`Quiz ended with ${points} points`);
       });
     }
   }, [user]);
@@ -144,6 +159,7 @@ const Chat = () => {
     } else {
       setQuestion({ _id: '', title: '', answers: [] });
       setQuestions([]);
+      setQuizMessage('You have provided answers for all questions - waiting for teacher to end the test...');
     }
   };
 
@@ -215,6 +231,7 @@ const Chat = () => {
           {user && user.role === 'student' ? (
             <Container fluid className="vh-100 d-flex flex-column justify-content-center px-5">
               <Form onSubmit={handleSubmit}>
+                <h3>{quizMessage}</h3>
                 <h3>{question.title}</h3>
                 <Form.Group as={Row}>
                   <Col>
