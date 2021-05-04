@@ -17,11 +17,10 @@ import {
   Navbar,
   Nav,
 } from 'react-bootstrap';
+import env from 'react-dotenv';
 import { useUser } from '../context/UserContext';
 
-const baseUrl = 'http://localhost:4000';
-
-const socket = io.connect(baseUrl);
+const socket = io.connect(env.BASE_URL);
 
 interface ChatMessage {
   from: string;
@@ -63,10 +62,10 @@ const Chat = () => {
 
   useEffect(() => {
     const fetchQuizData = async (id: string) => {
-      const responseResult = await axios.post(`${baseUrl}/quizResponse`, { quizId: id });
+      const responseResult = await axios.post(`${env.BASE_URL}/quizResponse`, { quizId: id });
       setResponseId(responseResult.data.id);
 
-      const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
+      const result = await axios.get(`${env.BASE_URL}/quiz/questions/${id}`);
       setQuestions(result.data);
       setQuestion(result.data.questions[0]);
     };
@@ -98,7 +97,7 @@ const Chat = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`${baseUrl}/quiz`);
+      const result = await axios.get(`${env.BASE_URL}/quiz`);
       if (result.data) {
         setQuizIds(result.data);
       }
@@ -120,7 +119,7 @@ const Chat = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    await axios.put(`${baseUrl}/quizResponse`, {
+    await axios.put(`${env.BASE_URL}/quizResponse`, {
       quizResponseId: responseId,
       quizId,
       questionId: question._id,
