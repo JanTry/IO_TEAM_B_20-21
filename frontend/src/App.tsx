@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 import Entry from './components/Entry';
-import LoginForm from './components/LoginForm';
+import { LoginForm, SessionLoginForm } from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 import Dashboard from './components/Dashboard';
 import Chat from './components/Chat';
@@ -24,6 +24,7 @@ const App = () => (
       <UserProvider>
         <Route exact path="/" component={Entry} />
         <Route exact path="/login" component={LoginForm} />
+        <Route exact path="/session-id/:sessionId/access-code/:accessCode" component={SessionLoginForm} />
         <Route exact path="/register" component={RegistrationForm} />
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/chat" component={Chat} />

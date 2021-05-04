@@ -7,12 +7,16 @@ import { useUser } from '../context/UserContext';
 
 const baseUrl = 'http://localhost:4000/session/';
 
+const sessionUrlFormat = (sessionId: String, accessCode: String) =>
+  `http://localhost:3000/session-id/${sessionId}/access-code/${accessCode}`;
+
 const Dashboard = () => {
   const history = useHistory();
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
   const [accessCode, setAccessCode] = useState('');
-  const { user, updateUserId, updateSessionId, updateAccessCode } = useUser();
+  const [sessionUrl, setSessionUrl] = useState('');
+  const { user, updateUserId, updateSessionId, updateAccessCode, updateSessionUrl } = useUser();
 
   useEffect(() => {
     setUserId(`${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`);
@@ -26,8 +30,10 @@ const Dashboard = () => {
       sessionStorage.setItem('userId', userId);
       sessionStorage.setItem('sessionId', sessionId);
       sessionStorage.setItem('accessCode', accessCode);
+      sessionStorage.setItem('sessionUrl', sessionUrl);
       updateUserId(userId);
       updateSessionId(sessionId);
+      updateSessionUrl(sessionUrl);
       updateAccessCode(accessCode);
       history.push('/chat');
     } else {
@@ -42,6 +48,7 @@ const Dashboard = () => {
 
     setSessionId(result.data._id);
     setAccessCode(result.data.accessCode);
+    setSessionUrl(sessionUrlFormat(result.data._id, result.data.accessCode));
   };
 
   const handleLogout = () => {
@@ -78,6 +85,11 @@ const Dashboard = () => {
             onChange={(e) => setAccessCode(e.target.value)}
             placeholder="Enter access code"
           />
+        </Form.Group>
+
+        <Form.Group controlId="sessionUrl">
+          <Form.Label>Link to the session:</Form.Label>
+          <Form.Control value={sessionUrl} onChange={(e) => setSessionUrl(e.target.value)} placeholder="" />
         </Form.Group>
 
         <Button variant="primary" type="submit" block className="mb-5">

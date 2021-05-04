@@ -45,13 +45,15 @@ const Chat = () => {
 
   const [responseId, setResponseId] = useState('');
 
+  const [url, setSessionUrl] = useState('');
+
   const [quizId, setQuizId] = useState('');
   const [quizIds, setQuizIds] = useState([] as string[]);
 
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const { user, userId, sessionId, accessCode } = useUser();
+  const { user, userId, sessionId, accessCode, sessionUrl } = useUser();
 
   useEffect(() => {
     socket.emit('join', { userID: userId, sessionID: sessionId, accessCode }, (response: any) => {
@@ -165,6 +167,11 @@ const Chat = () => {
             <Navbar.Text className="mt-1 mx-2">
               Access code: <b>{accessCode}</b>
             </Navbar.Text>
+            {sessionUrl ? (
+              <Navbar.Text className="mt-1 mx-2">
+                Link: <b>{sessionUrl}</b>
+              </Navbar.Text>
+            ) : null}
           </Nav>
           <Navbar.Text className="mt-1 mx-2">
             Signed in as: <b>{userId}</b>
