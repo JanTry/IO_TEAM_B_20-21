@@ -61,35 +61,39 @@ const Chat = () => {
   const { user, username, sessionId, accessCode } = useUser();
 
   useEffect(() => {
-    socket.emit('join', { userID: username, sessionID: sessionId, accessCode }, (response: any) => {
-      if (response.status === 'ok') {
-        setConnected(true);
-      }
-    });
+    if (user) {
+      socket.emit('join', { userId: user.userId, sessionId }, (response: any) => {
+        if (response.status === 'ok') {
+          setConnected(true);
+        }
+      });
+    }
   }, [user]);
 
   useEffect(() => {
-    const fetchQuizData = async (id: string) => {
-      const responseResult = await axios.post(`${baseUrl}/quizResponse`, { quizId: id });
-      setResponseId(responseResult.data.id);
+    if (user) {
+      const fetchQuizData = async (id: string) => {
+        const responseResult = await axios.post(`${baseUrl}/quizResponse`, { quizId: id });
+        setResponseId(responseResult.data.id);
 
-      const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
-      setQuestions(result.data);
-      setQuestion(result.data[0]);
-    };
+        const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
+        setQuestions(result.data);
+        setQuestion(result.data[0]);
+      };
 
-    socket.on('start-quiz', (data: any) => {
-      if (user && user.role === 'student') {
-        setQuizId(data.quizId);
-        fetchQuizData(data.quizId);
-      }
-    });
+      socket.on('start-quiz', (data: any) => {
+        if (user.role === 'student') {
+          setQuizId(data.quizId);
+          fetchQuizData(data.quizId);
+        }
+      });
 
-    socket.on('end-quiz', () => {
-      setQuestions([]);
-      setQuestion({ _id: '', title: '', answers: [] });
-    });
-  }, []);
+      socket.on('end-quiz', () => {
+        setQuestions([]);
+        setQuestion({ _id: '', title: '', answers: [] });
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     socket.on('chat-message', ({ from, msg }: ChatMessage) => {
@@ -127,12 +131,13 @@ const Chat = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    await axios.put(`${baseUrl}/quizResponse`, {
+    const data = {
       quizResponseId: responseId,
       quizId,
       questionId: question._id,
       answerId: event.target.a.value,
-    });
+    };
+    await axios.put(`${baseUrl}/quizResponse`, data);
     if (questions.length > 1) {
       setQuestion(questions[1]);
       setQuestions(questions.slice(1));
@@ -189,7 +194,9 @@ const Chat = () => {
         <Col className="bg-secondary">
           <ListGroup className="p-4 mx-0">
             {messages.map((msg, i) => (
-              <ListGroup.Item className="pb-2" eventKey={String(i)}>{msg}</ListGroup.Item>
+              <ListGroup.Item className="pb-2" eventKey={String(i)}>
+                {msg}
+              </ListGroup.Item>
             ))}
           </ListGroup>
 

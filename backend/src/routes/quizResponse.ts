@@ -51,7 +51,7 @@ quizResponseRoutes.put(
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
     QuizResponse.updateOne(
-      { _id: quizResponseId, quizId, studentId: '6075f045aa5b0fc222216d9c' },
+      { _id: quizResponseId, quizId, studentId: res.locals.user._id },
       { $push: { responses: { questionId, answerId } } },
       null,
       (err, result) => {
