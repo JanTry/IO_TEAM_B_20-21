@@ -1,15 +1,15 @@
-import * as mongoose from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 
 export interface MessageType {
-  senderName: string;
+  senderID: Types.ObjectId;
   text: string;
   date?: Date;
 }
 
-const messageSchema = new mongoose.Schema(
+const messageSchema = new Schema(
   {
-    senderName: {
-      type: String,
+    senderID: {
+      type: Types.ObjectId,
       required: true,
     },
     text: {
@@ -26,4 +26,4 @@ const messageSchema = new mongoose.Schema(
   }
 );
 
-export const Message = mongoose.model('Message', messageSchema);
+export const Message = model('Message', messageSchema);

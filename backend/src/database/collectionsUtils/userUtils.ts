@@ -29,16 +29,3 @@ export const printAllUsers = async () => {
 export const clearUsersCollection = async () => {
   return (await User.deleteMany({})).deletedCount;
 };
-
-export const populateUsersCollection = async (n = 10) => {
-  for (let i = 1; i <= n; i++) {
-    addUser({
-      firstName: `FIRSTNAME_${i}`,
-      lastName: `LASTNAME_${i}`,
-      email: `EMAIL${i}`,
-      password: `PASSWORD${i}`,
-      role: `ROLE${i}`,
-    });
-  }
-  console.log(n, ' new users added to users');
-};

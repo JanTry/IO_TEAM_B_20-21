@@ -14,8 +14,12 @@ import { Session } from './database/models/session';
 import { quizRoutes } from './routes/quiz';
 import { quizResponseRoutes } from './routes/quizResponse';
 import { authMiddleware } from './middleware/auth';
+import { populateDatabase } from './database/dbPopulate';
 
 dbConnect();
+
+// UNCOMMENT FOLLOWING LINE FOR DATABASE POPULATION
+populateDatabase();
 
 dotenv.config();
 
