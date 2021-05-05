@@ -14,7 +14,7 @@ import { Session } from './database/models/session';
 import { quizRoutes } from './routes/quiz';
 import { quizResponseRoutes } from './routes/quizResponse';
 import { authMiddleware } from './middleware/auth';
-import { populateDatabase, createSampleUsers } from './database/dbPopulate';
+// import { populateDatabase, createSampleUsers } from './database/dbPopulate';
 
 dbConnect();
 
