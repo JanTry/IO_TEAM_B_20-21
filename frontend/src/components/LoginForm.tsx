@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-expressions */
-import React from 'react';
 import { useHistory, Link, useParams } from 'react-router-dom';
 import { Form, Button, Container } from 'react-bootstrap';
 import jwt from 'jwt-decode';
