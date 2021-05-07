@@ -17,10 +17,9 @@ import {
   Navbar,
   Nav,
 } from 'react-bootstrap';
-import env from 'react-dotenv';
 import { useUser } from '../context/UserContext';
 
-const socket = io.connect(env.BASE_URL);
+const socket = io.connect(process.env.REACT_APP_BASE_URL!);
 
 interface ChatMessage {
   from: string;
@@ -44,13 +43,15 @@ const Chat = () => {
 
   const [responseId, setResponseId] = useState('');
 
+  const [url, setSessionUrl] = useState('');
+
   const [quizId, setQuizId] = useState('');
   const [quizIds, setQuizIds] = useState([] as string[]);
 
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const { user, userId, sessionId, accessCode } = useUser();
+  const { user, userId, sessionId, accessCode, sessionUrl } = useUser();
 
   useEffect(() => {
     socket.emit('join', { userID: userId, sessionID: sessionId, accessCode }, (response: any) => {
@@ -62,10 +63,10 @@ const Chat = () => {
 
   useEffect(() => {
     const fetchQuizData = async (id: string) => {
-      const responseResult = await axios.post(`${env.BASE_URL}/quizResponse`, { quizId: id });
+      const responseResult = await axios.post(`${process.env.REACT_APP_BASE_URL}/quizResponse`, { quizId: id });
       setResponseId(responseResult.data.id);
 
-      const result = await axios.get(`${env.BASE_URL}/quiz/questions/${id}`);
+      const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quiz/questions/${id}`);
       setQuestions(result.data);
       setQuestion(result.data.questions[0]);
     };
@@ -97,7 +98,7 @@ const Chat = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`${env.BASE_URL}/quiz`);
+      const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quiz`);
       if (result.data) {
         setQuizIds(result.data);
       }
@@ -119,7 +120,7 @@ const Chat = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    await axios.put(`${env.BASE_URL}/quizResponse`, {
+    await axios.put(`${process.env.REACT_APP_BASE_URL}/quizResponse`, {
       quizResponseId: responseId,
       quizId,
       questionId: question._id,
@@ -164,6 +165,11 @@ const Chat = () => {
             <Navbar.Text className="mt-1 mx-2">
               Access code: <b>{accessCode}</b>
             </Navbar.Text>
+            {sessionUrl ? (
+              <Navbar.Text className="mt-1 mx-2">
+                Link: <b>{sessionUrl}</b>
+              </Navbar.Text>
+            ) : null}
           </Nav>
           <Navbar.Text className="mt-1 mx-2">
             Signed in as: <b>{userId}</b>
