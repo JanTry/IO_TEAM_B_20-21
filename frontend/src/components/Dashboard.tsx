@@ -3,11 +3,10 @@ import { Form, Button, Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import env from 'react-dotenv';
 import { useUser } from '../context/UserContext';
 
 const sessionUrlFormat = (sessionId: String, accessCode: String) => 
-`${env.FRONT_URL}/session-id/${sessionId}/access-code/${accessCode}`;
+`${process.env.REACT_APP_FRONT_URL}/session-id/${sessionId}/access-code/${accessCode}`;
 
 const Dashboard = () => {
   const history = useHistory();
@@ -24,7 +23,7 @@ const Dashboard = () => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
-    const result = await axios.get(`${env.BASE_URL}/session/validate/${sessionId}/${accessCode}`);
+    const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/session/validate/${sessionId}/${accessCode}`);
     if (result.data) {
       sessionStorage.setItem('userId', userId);
       sessionStorage.setItem('sessionId', sessionId);
@@ -43,7 +42,7 @@ const Dashboard = () => {
   const createNewSession = async (event: any) => {
     event.preventDefault();
 
-    const result: any = await axios.post(`${env.BASE_URL}/session`);
+    const result: any = await axios.post(`${process.env.REACT_APP_BASE_URL}/session`);
 
     setSessionId(result.data._id);
     setAccessCode(result.data.accessCode);
