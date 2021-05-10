@@ -19,9 +19,7 @@ import {
 } from 'react-bootstrap';
 import { useUser } from '../context/UserContext';
 
-const baseUrl = 'http://localhost:4000';
-
-const socket = io.connect(baseUrl);
+const socket = io.connect(process.env.REACT_APP_BASE_URL!);
 
 interface ChatMessage {
   from: string;
@@ -50,6 +48,8 @@ const Chat = () => {
   const [connected, setConnected] = useState(false);
 
   const [responseId, setResponseId] = useState('');
+
+  const [url, setSessionUrl] = useState('');
 
   const [quizId, setQuizId] = useState('');
   const [quizes, setQuizes] = useState([] as Quiz[]);
@@ -124,7 +124,7 @@ const Chat = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`${baseUrl}/quiz`);
+      const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quiz`);
       if (result.data) {
         setQuizes(result.data);
       }
@@ -197,6 +197,11 @@ const Chat = () => {
             <Navbar.Text className="mt-1 mx-2">
               Access code: <b>{accessCode}</b>
             </Navbar.Text>
+            {sessionUrl ? (
+              <Navbar.Text className="mt-1 mx-2">
+                Link: <b>{sessionUrl}</b>
+              </Navbar.Text>
+            ) : null}
           </Nav>
           <Navbar.Text className="mt-1 mx-2">
             Signed in as: <b>{username}</b>

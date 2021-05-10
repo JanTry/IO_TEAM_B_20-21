@@ -46,6 +46,8 @@ const quizSchema = new Schema(
   }
 );
 
+export const Answer = model('Answer', answerSchema);
+export const Question = model('Question', questionSchema);
 export const Quiz = model('Quiz', quizSchema);
 
 export interface Question {

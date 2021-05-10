@@ -16,11 +16,13 @@ interface UserContextValue {
   sessionId: string | null;
   accessCode: string | null;
   isLecturer: string | null;
+  sessionUrl: string | null;
   updateUser: (user: User | null) => void;
   updateUsername: (username: string) => void;
   updateSessionId: (sessionId: string) => void;
   updateAccessCode: (accessCode: string) => void;
   updateLecturer: (isLecturer: string | null) => void;
+  updateSessionUrl: (sessionUrl: string | null) => void;
 }
 
 const UserContext = createContext<UserContextValue>({
@@ -29,11 +31,13 @@ const UserContext = createContext<UserContextValue>({
   sessionId: '',
   accessCode: '',
   isLecturer: null,
+  sessionUrl: null,
   updateUser: () => null,
   updateUsername: () => '',
   updateSessionId: () => '',
   updateAccessCode: () => '',
   updateLecturer: () => null,
+  updateSessionUrl: () => null
 });
 
 export const UserProvider: React.FunctionComponent = (props) => {
@@ -43,6 +47,7 @@ export const UserProvider: React.FunctionComponent = (props) => {
   const [sessionId, setSessionId] = useState(sessionStorage.getItem('sessionId'));
   const [accessCode, setAccessCode] = useState(sessionStorage.getItem('accessCode'));
   const [isLecturer, setLecturer] = useState<string | null>(sessionStorage.getItem('isLecturer'));
+  const [sessionUrl, setSessionUrl] = useState<string | null>(sessionStorage.getItem('sessionUrl'));
 
   const updateUser = useCallback((newUser: User | null) => {
     setUser(newUser);
@@ -64,6 +69,10 @@ export const UserProvider: React.FunctionComponent = (props) => {
     setLecturer(lecturerFlag);
   }, []);
 
+  const updateSessionUrl = useCallback((newSessionUrl: string | null) => {
+    setSessionUrl(newSessionUrl);
+  }, []);
+
   useEffect(() => {
     updateUser({
       firstName: sessionStorage.getItem('firstName'),
@@ -83,11 +92,13 @@ export const UserProvider: React.FunctionComponent = (props) => {
         sessionId,
         accessCode,
         isLecturer,
+        sessionUrl,
         updateUser,
         updateUsername,
         updateSessionId,
         updateAccessCode,
         updateLecturer,
+        updateSessionUrl
       }}
     >
       {children}

@@ -15,8 +15,14 @@ import { quizRoutes } from './routes/quiz';
 import { quizResponseRoutes } from './routes/quizResponse';
 import { authMiddleware } from './middleware/auth';
 import { QuizResponse } from './database/models/quizResponse';
+// import { populateDatabase, createSampleUsers } from './database/dbPopulate';
 
 dbConnect();
+
+// UNCOMMENT FOLLOWING LINE FOR DATABASE POPULATION
+// populateDatabase();
+// UNCOMMENT FOLLOWING LINE FOR USERS DB MOCKUP (teacherNumber, studentNumber)
+// createSampleUsers(1, 3);
 
 dotenv.config();
 
