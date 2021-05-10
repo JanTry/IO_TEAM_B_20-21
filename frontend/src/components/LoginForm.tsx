@@ -81,7 +81,7 @@ export const LoginForm = () => {
 
 export const SessionLoginForm = () => {
   const { sessionId, accessCode } = useParams<{ sessionId: string; accessCode: string }>();
-  const { user, updateUserId, updateSessionId, updateAccessCode, isLecturer, updateUser } = useUser();
+  const { user, updateUsername, updateSessionId, updateAccessCode, isLecturer, updateUser } = useUser();
 
   const history = useHistory();
 
@@ -103,7 +103,7 @@ export const SessionLoginForm = () => {
       sessionStorage.setItem('lastName', decodedUser.lastName);
       sessionStorage.setItem('sessionId', sessionId);
       sessionStorage.setItem('accessCode', accessCode);
-      updateUserId(`${decodedUser.firstName} ${decodedUser.lastName}`);
+      updateUsername(`${decodedUser.firstName} ${decodedUser.lastName}`);
       updateSessionId(sessionId);
       updateAccessCode(accessCode);
       history.push('/chat');

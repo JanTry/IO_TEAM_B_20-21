@@ -49,8 +49,6 @@ const Chat = () => {
 
   const [responseId, setResponseId] = useState('');
 
-  const [url, setSessionUrl] = useState('');
-
   const [quizId, setQuizId] = useState('');
   const [quizes, setQuizes] = useState([] as Quiz[]);
   const [chosenQuiz, setChosenQuiz] = useState('');
@@ -60,7 +58,7 @@ const Chat = () => {
 
   const [quizMessage, setQuizMessage] = useState('');
 
-  const { user, username, sessionId, accessCode } = useUser();
+  const { user, username, sessionId, accessCode, sessionUrl } = useUser();
 
   useEffect(() => {
     if (user) {
@@ -75,11 +73,14 @@ const Chat = () => {
   useEffect(() => {
     if (user) {
       const fetchQuizData = async (id: string) => {
-        const responseResult = await axios.post(`${baseUrl}/quizResponse`, { quizId: id, sessionId });
+        const responseResult = await axios.post(`${process.env.REACT_APP_BASE_URL}/quizResponse`, {
+          quizId: id,
+          sessionId,
+        });
         setResponseId(responseResult.data.id);
         sessionStorage.setItem('responseId', responseResult.data.id);
 
-        const result = await axios.get(`${baseUrl}/quiz/questions/${id}`);
+        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quiz/questions/${id}`);
         setQuestions(result.data);
         setQuestion(result.data[0]);
       };
@@ -95,7 +96,7 @@ const Chat = () => {
       const fetchQuizResponse = async () => {
         const resId = sessionStorage.getItem('responseId');
 
-        const response = await axios.get(`${baseUrl}/quizResponse/points/${resId}`);
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/quizResponse/points/${resId}`);
         sessionStorage.setItem('points', response.data.points);
       };
 
@@ -152,7 +153,7 @@ const Chat = () => {
       questionId: question._id,
       answerId: event.target.a.value,
     };
-    await axios.put(`${baseUrl}/quizResponse`, data);
+    await axios.put(`${process.env.REACT_APP_BASE_URL}/quizResponse`, data);
     if (questions.length > 1) {
       setQuestion(questions[1]);
       setQuestions(questions.slice(1));

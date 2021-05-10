@@ -37,7 +37,7 @@ const UserContext = createContext<UserContextValue>({
   updateSessionId: () => '',
   updateAccessCode: () => '',
   updateLecturer: () => null,
-  updateSessionUrl: () => null
+  updateSessionUrl: () => null,
 });
 
 export const UserProvider: React.FunctionComponent = (props) => {
@@ -98,7 +98,7 @@ export const UserProvider: React.FunctionComponent = (props) => {
         updateSessionId,
         updateAccessCode,
         updateLecturer,
-        updateSessionUrl
+        updateSessionUrl,
       }}
     >
       {children}
