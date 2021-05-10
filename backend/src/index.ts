@@ -14,6 +14,7 @@ import { Session } from './database/models/session';
 import { quizRoutes } from './routes/quiz';
 import { quizResponseRoutes } from './routes/quizResponse';
 import { authMiddleware } from './middleware/auth';
+import { logUserJoin, logUserLeave } from './database/collectionsUtils/studentLogUtils';
 // import { populateDatabase, createSampleUsers } from './database/dbPopulate';
 
 dbConnect();
@@ -65,6 +66,7 @@ io.on('connection', (socket: ChatSocket) => {
         msg: 'Success',
       });
       console.log(`User ${userID} joined room ${sessionID}`);
+      logUserJoin(userID, sessionID)
     } else {
       callback({
         status: 'error',
@@ -87,6 +89,7 @@ io.on('connection', (socket: ChatSocket) => {
     socket.leave(socket.id);
     socket.leave(socket.sessionID);
     console.log('user disconnected');
+    logUserLeave(socket.userID, socket.sessionID)
   });
 });
 
