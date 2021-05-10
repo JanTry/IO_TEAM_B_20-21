@@ -35,12 +35,14 @@ quizResponseRoutes.post(
   }
 );
 
-const getValidAnswers = (questions: QuestionDto[]) => {
-  const questionAnswerEntries = questions.map((q) => [
-    q._id,
-    q.answers.filter((a) => a.isCorrect).map((a) => a._id.toString())[0],
-  ]);
-  return Object.fromEntries(questionAnswerEntries);
+const getQuestionMetadata = (questions: QuestionDto[]) => {
+  return questions.reduce((acc, current) => {
+    const questionData = {
+      points: current.points,
+      correctAnswers: current.answers.filter((a) => a.isCorrect).map((a) => a._id.toString()),
+    };
+    return { ...acc, [current._id.toString()]: questionData };
+  }, {} as Record<string, { points: number; correctAnswers: string[] }>);
 };
 
 quizResponseRoutes.get('/points/:responseId', (req, res) => {
@@ -59,19 +61,17 @@ quizResponseRoutes.get('/points/:responseId', (req, res) => {
           if (error) {
             res.status(500).send(error);
           }
-          const validAnswers = getValidAnswers(quiz.questions);
-          const studentAnswers = (responses as any[]).reduce((acc, curr) => {
-            const { questionId, answerId } = curr;
-            return { ...acc, [questionId]: answerId.toString() };
-          }, {});
+          const questionMetadata = getQuestionMetadata(quiz.questions);
 
-          const points = Object.entries(studentAnswers).reduce((acc, current) => {
-            const [questionId, answerId] = current;
-            return validAnswers[questionId] === answerId ? acc + 1 : acc;
+          const points = responses.reduce((acc, { questionId, answerId }) => {
+            const metadata = questionMetadata[questionId.toString()] ?? { points: 0, correctAnswers: [] };
+            return metadata.correctAnswers.find((a) => a === answerId.toString()) ? acc + metadata.points : acc;
           }, 0);
 
           res.status(200).send({ points });
         });
+      } else {
+        res.sendStatus(500);
       }
     }
   );
