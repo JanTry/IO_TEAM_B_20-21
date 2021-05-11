@@ -49,13 +49,13 @@ quizResponseRoutes.get('/points/:responseId', (req, res) => {
   const { responseId } = req.params;
   QuizResponse.findOne(
     { _id: responseId, studentId: res.locals.user._id, isEnded: true },
-    { _id: 0, quizId: 1, responses: 1 },
+    { _id: 0, quizId: 1, questionResponses: 1 },
     null,
     (err, result: Document & QuizResponseDto) => {
       if (err) {
         res.status(500).send(err);
       } else if (result) {
-        const { quizId, responses } = result;
+        const { quizId, questionResponses } = result;
 
         Quiz.findOne({ _id: quizId }, null, null, (error, quiz: Document & QuizDto) => {
           if (error) {
@@ -63,7 +63,7 @@ quizResponseRoutes.get('/points/:responseId', (req, res) => {
           }
           const questionMetadata = getQuestionMetadata(quiz.questions);
 
-          const points = responses.reduce((acc, { questionId, answerId }) => {
+          const points = questionResponses.reduce((acc, { questionId, answerId }) => {
             const metadata = questionMetadata[questionId.toString()] ?? { points: 0, correctAnswers: [] };
             return metadata.correctAnswers.find((a) => a === answerId.toString()) ? acc + metadata.points : acc;
           }, 0);
@@ -89,7 +89,7 @@ quizResponseRoutes.put(
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
     QuizResponse.updateOne(
       { _id: quizResponseId, quizId, studentId: res.locals.user._id },
-      { $push: { responses: { questionId, answerId } } },
+      { $push: { questionResponses: { questionId, answerId } } },
       null,
       (err, result) => {
         if (err) {

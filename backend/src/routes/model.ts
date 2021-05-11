@@ -19,7 +19,7 @@ export interface QuizDto {
 
 export interface QuizResponseDto {
   quizId: Types.ObjectId;
-  responses: Array<{
+  questionResponses: Array<{
     questionId: Types.ObjectId;
     answerId: Types.ObjectId;
   }>;

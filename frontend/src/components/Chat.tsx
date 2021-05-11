@@ -97,16 +97,18 @@ const Chat = () => {
         const resId = sessionStorage.getItem('responseId');
 
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/quizResponse/points/${resId}`);
+
         sessionStorage.setItem('points', response.data.points);
       };
 
-      socket.on('end-quiz', () => {
+      socket.on('end-quiz', async () => {
         setQuestions([]);
         setQuestion({ _id: '', title: '', answers: [] });
-        fetchQuizResponse();
+        await fetchQuizResponse();
 
-        const points = sessionStorage.getItem('points');
-        setQuizMessage(`Quiz ended with ${points} points`);
+        setQuizMessage(`Quiz ended with ${sessionStorage.getItem('points')} points`);
+        console.log('pobieram storage');
+
       });
     }
   }, [user]);
