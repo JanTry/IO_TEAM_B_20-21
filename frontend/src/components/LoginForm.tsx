@@ -81,7 +81,7 @@ export const LoginForm = () => {
 
 export const SessionLoginForm = () => {
   const { sessionId, accessCode } = useParams<{ sessionId: string; accessCode: string }>();
-  const { user, updateUsername, updateSessionId, updateAccessCode, isLecturer, updateUser } = useUser();
+  const { updateUsername, updateSessionId, updateAccessCode, isLecturer, updateUser } = useUser();
 
   const history = useHistory();
 

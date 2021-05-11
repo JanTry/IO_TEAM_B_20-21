@@ -5,8 +5,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
 
-const sessionUrlFormat = (sessionId: String, accessCode: String) => 
-`${process.env.REACT_APP_FRONT_URL}/session-id/${sessionId}/access-code/${accessCode}`;
+const sessionUrlFormat = (sessionId: String, accessCode: String) =>
+  `${process.env.REACT_APP_FRONT_URL}/session-id/${sessionId}/access-code/${accessCode}`;
 
 const Dashboard = () => {
   const history = useHistory();

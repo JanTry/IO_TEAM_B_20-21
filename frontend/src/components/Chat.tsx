@@ -52,6 +52,7 @@ const Chat = () => {
   const [quizId, setQuizId] = useState('');
   const [quizes, setQuizes] = useState([] as Quiz[]);
   const [chosenQuiz, setChosenQuiz] = useState('');
+  const [quizStatus, setQuizStatus] = useState('');
 
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -107,8 +108,6 @@ const Chat = () => {
         await fetchQuizResponse();
 
         setQuizMessage(`Quiz ended with ${sessionStorage.getItem('points')} points`);
-        console.log('pobieram storage');
-
       });
     }
   }, [user]);
@@ -168,6 +167,7 @@ const Chat = () => {
 
   const handleQuizIdSelect = (event: any) => {
     setQuizId(event);
+    setQuizStatus('not yet started');
     const filteredQuiz = quizes.find((quiz) => quiz.id === event);
     if (filteredQuiz) {
       setChosenQuiz(filteredQuiz.name);
@@ -176,10 +176,12 @@ const Chat = () => {
 
   const handleQuizStart = () => {
     socket.emit('start-quiz', quizId);
+    setQuizStatus('started');
   };
 
   const handleQuizEnd = () => {
     socket.emit('end-quiz', quizId);
+    setQuizStatus('ended');
   };
 
   const handleLogout = () => {
@@ -270,7 +272,14 @@ const Chat = () => {
                 <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center px-5">
                   {quizId !== '' ? (
                     <div>
-                      <h4>chosen quiz: {chosenQuiz}</h4>
+                      <h4>
+                        <b>Chosen quiz name: </b>
+                        {chosenQuiz}
+                      </h4>
+                      <h4>
+                        <b>Quiz status: </b>
+                        {quizStatus}
+                      </h4>
                     </div>
                   ) : null}
 
@@ -282,10 +291,10 @@ const Chat = () => {
                     ))}
                   </DropdownButton>
 
-                  <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizStart} block>
+                  <Button disabled={!quizId} className="m-4" variant="success" onClick={handleQuizStart} block>
                     Start quiz
                   </Button>
-                  <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizEnd} block>
+                  <Button disabled={!quizId} className="m-4" variant="danger" onClick={handleQuizEnd} block>
                     End quiz
                   </Button>
                 </Container>
