@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:4000/auth/register';
+const baseUrl = `${process.env.REACT_APP_BASE_URL}/auth/register`;
 
 const register = async (credentials: {
   firstName: string;

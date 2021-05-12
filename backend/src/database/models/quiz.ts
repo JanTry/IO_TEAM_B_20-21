@@ -7,7 +7,7 @@ const answerSchema = new Schema({
   },
   isCorrect: {
     type: Boolean,
-    reruired: true,
+    required: true,
   },
 });
 
@@ -32,6 +32,10 @@ const quizSchema = new Schema(
       type: Types.ObjectId,
       required: true,
     },
+    quizName: {
+      type: String,
+      required: true,
+    },
     questions: {
       type: [questionSchema],
       required: true,
@@ -42,4 +46,23 @@ const quizSchema = new Schema(
   }
 );
 
+export const Answer = model('Answer', answerSchema);
+export const Question = model('Question', questionSchema);
 export const Quiz = model('Quiz', quizSchema);
+
+export interface Question {
+  _id: string;
+  title: string;
+  points: number;
+  answers: {
+    _id: string;
+    data: string;
+    isCorrect: boolean;
+  }[];
+}
+
+export interface QuizModel {
+  _id: string;
+  quizName: string;
+  questions: Question[];
+}

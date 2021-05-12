@@ -5,29 +5,33 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
 
-const baseUrl = 'http://localhost:4000/session/';
+const sessionUrlFormat = (sessionId: String, accessCode: String) =>
+  `${process.env.REACT_APP_FRONT_URL}/session-id/${sessionId}/access-code/${accessCode}`;
 
 const Dashboard = () => {
   const history = useHistory();
-  const [userId, setUserId] = useState('');
+  const [username, setUsername] = useState('');
   const [sessionId, setSessionId] = useState('');
   const [accessCode, setAccessCode] = useState('');
-  const { user, updateUserId, updateSessionId, updateAccessCode } = useUser();
+  const [sessionUrl, setSessionUrl] = useState('');
+  const { user, updateUsername, updateSessionId, updateAccessCode, updateSessionUrl } = useUser();
 
   useEffect(() => {
-    setUserId(`${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`);
+    setUsername(`${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`);
   }, []);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
-    const result = await axios.get(`${baseUrl}validate/${sessionId}/${accessCode}`);
+    const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/session/validate/${sessionId}/${accessCode}`);
     if (result.data) {
-      sessionStorage.setItem('userId', userId);
+      sessionStorage.setItem('username', username);
       sessionStorage.setItem('sessionId', sessionId);
       sessionStorage.setItem('accessCode', accessCode);
-      updateUserId(userId);
+      sessionStorage.setItem('sessionUrl', sessionUrl);
+      updateUsername(username);
       updateSessionId(sessionId);
+      updateSessionUrl(sessionUrl);
       updateAccessCode(accessCode);
       history.push('/chat');
     } else {
@@ -38,10 +42,11 @@ const Dashboard = () => {
   const createNewSession = async (event: any) => {
     event.preventDefault();
 
-    const result: any = await axios.post(baseUrl);
+    const result: any = await axios.post(`${process.env.REACT_APP_BASE_URL}/session`);
 
     setSessionId(result.data._id);
     setAccessCode(result.data.accessCode);
+    setSessionUrl(sessionUrlFormat(result.data._id, result.data.accessCode));
   };
 
   const handleLogout = () => {
@@ -55,8 +60,8 @@ const Dashboard = () => {
         <Form.Group controlId="userID">
           <Form.Label>User id</Form.Label>
           <Form.Control
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter user id"
             disabled
           />
@@ -78,6 +83,11 @@ const Dashboard = () => {
             onChange={(e) => setAccessCode(e.target.value)}
             placeholder="Enter access code"
           />
+        </Form.Group>
+
+        <Form.Group controlId="sessionUrl">
+          <Form.Label>Link to the session:</Form.Label>
+          <Form.Control value={sessionUrl} onChange={(e) => setSessionUrl(e.target.value)} placeholder="" />
         </Form.Group>
 
         <Button variant="primary" type="submit" block className="mb-5">
