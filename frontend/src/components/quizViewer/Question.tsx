@@ -9,6 +9,7 @@ export interface AnswerValue {
 export interface QuestionValue {
   title: string;
   answers: AnswerValue[];
+  points: number;
 }
 
 interface QuestionProps {
