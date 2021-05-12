@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
@@ -18,6 +18,7 @@ import {
   Nav,
 } from 'react-bootstrap';
 import { useUser } from '../context/UserContext';
+import QuizViewer from './quizViewer/QuizViewer';
 
 const baseUrl = 'http://localhost:4000';
 
@@ -47,6 +48,7 @@ const Chat = () => {
 
   const [quizId, setQuizId] = useState('');
   const [quizIds, setQuizIds] = useState([] as string[]);
+  const [isCreatingQuiz, setIsCreatingQuiz] = useState(false);
 
   const [question, setQuestion] = useState<Question>({ _id: '', title: '', answers: [] });
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -147,9 +149,46 @@ const Chat = () => {
     socket.emit('end-quiz', 'koniec');
   };
 
+  const handleQuizCreation = () => {
+    setIsCreatingQuiz(!isCreatingQuiz);
+  };
+
   const handleLogout = () => {
     sessionStorage.clear();
     history.push('/');
+  };
+
+  const TeacherPanel = () => {
+    if (isCreatingQuiz === true) {
+      return (
+        <div>
+          <QuizViewer />
+          <Button className="m-4" variant="primary" onClick={handleQuizCreation} block>
+            Cancel quiz creation
+          </Button>
+        </div>
+      );
+    }
+    return (
+      <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center px-5">
+        <DropdownButton className="m-4" id="dropdown-basic-button" title="wybierz quiz">
+          {quizIds.map((id) => (
+            <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={id}>
+              {id}
+            </Dropdown.Item>
+          ))}
+        </DropdownButton>
+        <Button className="m-4" variant="primary" onClick={handleQuizCreation} block>
+          Create new quiz
+        </Button>
+        <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizStart} block>
+          Start quiz
+        </Button>
+        <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizEnd} block>
+          End quiz
+        </Button>
+      </Container>
+    );
   };
 
   return (
@@ -213,22 +252,7 @@ const Chat = () => {
               </Form>
             </Container>
           ) : (
-            <Container fluid className="vh-100 d-flex flex-column justify-content-center align-items-center px-5">
-              <DropdownButton className="m-4" id="dropdown-basic-button" title="wybierz quiz">
-                {quizIds.map((id) => (
-                  <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={id}>
-                    {id}
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-
-              <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizStart} block>
-                Start quiz
-              </Button>
-              <Button disabled={!quizId} className="m-4" variant="primary" onClick={handleQuizEnd} block>
-                End quiz
-              </Button>
-            </Container>
+            <TeacherPanel />
           )}
         </Col>
       </Row>
