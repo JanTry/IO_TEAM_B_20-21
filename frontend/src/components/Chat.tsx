@@ -128,7 +128,7 @@ const Chat = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`http://localhost:4000/quiz`);
+      const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quiz`);
       if (result.data) {
         setQuizes(result.data);
       }
