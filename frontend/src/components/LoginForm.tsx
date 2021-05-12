@@ -10,6 +10,7 @@ interface User {
   lastName: string;
   email: string;
   role: string;
+  userId: string;
 }
 
 export const LoginForm = () => {
@@ -35,6 +36,7 @@ export const LoginForm = () => {
       sessionStorage.setItem('role', decodedUser.role);
       sessionStorage.setItem('firstName', decodedUser.firstName);
       sessionStorage.setItem('lastName', decodedUser.lastName);
+      sessionStorage.setItem('userId', decodedUser.userId);
 
       history.push('/dashboard');
 
@@ -79,7 +81,7 @@ export const LoginForm = () => {
 
 export const SessionLoginForm = () => {
   const { sessionId, accessCode } = useParams<{ sessionId: string; accessCode: string }>();
-  const { user, updateUserId, updateSessionId, updateAccessCode, isLecturer, updateUser } = useUser();
+  const { updateUsername, updateSessionId, updateAccessCode, isLecturer, updateUser } = useUser();
 
   const history = useHistory();
 
@@ -101,7 +103,7 @@ export const SessionLoginForm = () => {
       sessionStorage.setItem('lastName', decodedUser.lastName);
       sessionStorage.setItem('sessionId', sessionId);
       sessionStorage.setItem('accessCode', accessCode);
-      updateUserId(`${decodedUser.firstName} ${decodedUser.lastName}`);
+      updateUsername(`${decodedUser.firstName} ${decodedUser.lastName}`);
       updateSessionId(sessionId);
       updateAccessCode(accessCode);
       history.push('/chat');

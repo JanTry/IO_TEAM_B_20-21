@@ -65,7 +65,7 @@ authRoutes.post('/login', body('email').isEmail(), body('password').isLength({ m
       return res.status(200).json({
         success: true,
         token: jwt.sign(
-          { role: user.role, email: user.email, firstName: user.firstName, lastName: user.lastName },
+          { userId: user._id, role: user.role, email: user.email, firstName: user.firstName, lastName: user.lastName },
           privateKey,
           { algorithm: 'RS256' }
         ),

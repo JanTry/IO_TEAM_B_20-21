@@ -24,6 +24,10 @@ const quizResponseSchema = new Schema(
       type: Types.ObjectId,
       required: true,
     },
+    isEnded: {
+      type: Boolean,
+      required: true,
+    },
     studentId: {
       type: Types.ObjectId,
       required: true,
