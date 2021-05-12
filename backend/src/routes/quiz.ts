@@ -1,5 +1,6 @@
 import express from 'express';
 import { body, CustomValidator, validationResult } from 'express-validator';
+import { ObjectID } from 'mongodb';
 import { Quiz } from '../database/models/quiz';
 
 export const quizRoutes = express.Router();
@@ -38,7 +39,15 @@ quizRoutes.post(
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-    const data = { ...req.body, authorId: res.locals.user._id };
+    const typedBody = req.body as {
+      quizName: string;
+      questions: Array<{ title: string; points: number; answers: Array<{ data: string; isCorrect: boolean }> }>;
+    };
+    const questions = typedBody.questions.map((q) => {
+      const answers = q.answers.map((a) => ({ ...a, _id: new ObjectID() }));
+      return { ...q, answers };
+    });
+    const data = { ...req.body, questions, authorId: res.locals.user._id };
     Quiz.create(data, (err, result) => {
       if (err) {
         return res.status(500).send(err);

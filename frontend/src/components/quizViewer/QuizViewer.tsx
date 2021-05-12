@@ -41,7 +41,7 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
 
   const onSaveChangesClicked = useCallback(async () => {
     // save changes to db
-    await axios.post('http://localhost:4000/quiz', JSON.stringify({ quizName, questions }));
+    await axios.post('http://localhost:4000/quiz', { quizName, questions });
   }, [quizName, questions]);
 
   const onCancelClicked = useCallback(() => {
