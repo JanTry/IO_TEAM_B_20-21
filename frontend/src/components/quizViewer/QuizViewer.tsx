@@ -7,10 +7,11 @@ import QuestionCreator from './QuestionCreator';
 
 interface QuizViewerProps {
   quizId?: number | undefined;
+  toggleQuizCreation: () => void;
 }
 
 const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerProps) => {
-  const { quizId } = props;
+  const { quizId, toggleQuizCreation } = props;
   const { currentQuestion, isCreatingQuestion, clearCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
   const [questions, setQuestions] = useState<QuestionValue[]>();
   const [didQuizUpdate, setDidQuizUpdate] = useState(false);
@@ -41,11 +42,13 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
 
   const onSaveChangesClicked = useCallback(async () => {
     // save changes to db
+    toggleQuizCreation();
     await axios.post('http://localhost:4000/quiz', { quizName, questions });
   }, [quizName, questions]);
 
   const onCancelClicked = useCallback(() => {
     // if quizId undefined exit else view old
+    toggleQuizCreation();
   }, []);
 
   const onQuizNameChanged = (e: ChangeEvent<HTMLInputElement>) => {

@@ -36,7 +36,7 @@ const App = () => (
         <Route exact path="/chat" component={ChatWrapper} />
         <Route exact path="/quiz">
           <QuestionCreatorProvider>
-            <QuizViewer />
+            <QuizViewer toggleQuizCreation={() => {}}/>
           </QuestionCreatorProvider>
         </Route>
       </UserProvider>

@@ -137,7 +137,7 @@ const Chat = () => {
     if (user && user.role === 'teacher') {
       fetchData();
     }
-  }, [user]);
+  }, [user, isCreatingQuiz]);
 
   const handleMessageSubmition = (event: any) => {
     event.preventDefault();
@@ -199,7 +199,7 @@ const Chat = () => {
     if (isCreatingQuiz === true) {
       return (
         <div>
-          <QuizViewer />
+          <QuizViewer toggleQuizCreation={() => setIsCreatingQuiz(false)} />
           <Button className="m-4" variant="primary" onClick={handleQuizCreation} block>
             Cancel quiz creation
           </Button>
