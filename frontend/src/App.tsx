@@ -41,13 +41,13 @@ const App = () => (
         <Switch>
           <Route exact path="/" component={Entry} />
           <Route exact path="/login" component={LoginForm} />
+          <Route exact path="/register" component={RegistrationForm} />
           <GuardedRoute exact path="/session-id/:sessionId/access-code/:accessCode" component={SessionLoginForm} />
-          <GuardedRoute exact path="/register" component={RegistrationForm} />
           <GuardedRoute exact path="/dashboard" component={Dashboard} />
           <GuardedRoute exact path="/chat" component={ChatWrapper} />
           <GuardedRoute exact path="/quiz">
             <QuestionCreatorProvider>
-              <QuizViewer toggleQuizCreation={() => {}} />
+              <QuizViewer toggleQuizCreation={() => { }} />
             </QuestionCreatorProvider>
           </GuardedRoute>
         </Switch>

@@ -31,7 +31,7 @@ authRoutes.post(
 
     const { email, role, firstName, lastName } = req.body;
     if (await User.findOne({ email: req.body.email })) {
-      return res.status(400).json({ errors: [{ email: 'Email already exists.' }] });
+      return res.status(400).json({ error: 'Email already exists!' });
     }
 
     const ROUNDS = 10;
@@ -44,7 +44,7 @@ authRoutes.post(
       if (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-        return res.status(400).json({ errors: [{ email: 'Email already exists.' }] });
+        return res.status(400).json({ error: 'Email already exists!' });
       }
       res.status(200).json({
         success: true,
@@ -60,7 +60,7 @@ authRoutes.post('/login', body('email').isEmail(), body('password').isLength({ m
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   User.findOne({ email: req.body.email }, async (err, user) => {
-    if (!user) return res.status(400).json({ errors: [{ user: "This email doesn't match any user." }] });
+    if (!user) return res.status(400).json({ error: "This email doesn't match any user!" });
     if (await bcrypt.compare(req.body.password, user.password)) {
       return res.status(200).json({
         success: true,
@@ -71,6 +71,6 @@ authRoutes.post('/login', body('email').isEmail(), body('password').isLength({ m
         ),
       });
     }
-    return res.status(400).json({ errors: [{ password: 'Invalid password.' }] });
+    return res.status(400).json({ error: 'Invalid password!' });
   });
 });
