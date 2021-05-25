@@ -85,22 +85,24 @@ const Dashboard = () => {
           />
         </Form.Group>
 
-        <Form.Group controlId="sessionUrl">
-          <Form.Label>Link to the session:</Form.Label>
-          <Form.Control value={sessionUrl} onChange={(e) => setSessionUrl(e.target.value)} placeholder="" />
-        </Form.Group>
+        {(user && user.role) === 'teacher' ? (
+          <Form.Group controlId="sessionUrl" className="mb-4">
+            <Form.Label>Link to the session:</Form.Label>
+            <Form.Control value={sessionUrl} onChange={(e) => setSessionUrl(e.target.value)} placeholder="" disabled />
+          </Form.Group>
+        ) : null}
 
-        <Button variant="primary" type="submit" block className="mb-5">
+        <Button variant="primary" type="submit" block className="mb-4">
           Enter session
         </Button>
 
         {(user && user.role) === 'teacher' ? (
-          <Button variant="primary" type="button" onClick={createNewSession} block className="mb-5">
+          <Button variant="primary" type="button" onClick={createNewSession} block className="mb-4">
             Create new session
           </Button>
         ) : null}
 
-        <Button variant="danger" type="button" onClick={handleLogout} block className="mb-5">
+        <Button variant="danger" type="button" onClick={handleLogout} block className="mb-4">
           Log out
         </Button>
       </Form>
