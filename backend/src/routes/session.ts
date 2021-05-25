@@ -4,16 +4,6 @@ import { teacherMiddleware } from '../middleware/auth';
 
 export const sessionRoutes = express.Router();
 
-sessionRoutes.get('/', (req, res) => {
-  Session.find({}, (err, results) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(200).send(results);
-    }
-  });
-});
-
 sessionRoutes.get('/validate/:sessionID/:accessCode', (req, res) => {
   const { sessionID, accessCode } = req.params;
   Session.findOne({ _id: sessionID, accessCode, online: true }, (err, result) => {

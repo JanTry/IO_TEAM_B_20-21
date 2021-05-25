@@ -92,7 +92,13 @@ const Dashboard = () => {
           </Form.Group>
         ) : null}
 
-        <Button variant="primary" type="submit" block className="mb-4">
+        <Button
+          variant="primary"
+          disabled={sessionId.length === 0 || accessCode.length === 0}
+          type="submit"
+          block
+          className="mb-4"
+        >
           Enter session
         </Button>
 
