@@ -16,6 +16,7 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
   const [questions, setQuestions] = useState<QuestionValue[]>();
   const [didQuizUpdate, setDidQuizUpdate] = useState(false);
   const [quizName, setQuizName] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (quizId !== undefined) {
@@ -42,8 +43,15 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
 
   const onSaveChangesClicked = useCallback(async () => {
     // save changes to db
-    await axios.post(`${process.env.REACT_APP_BASE_URL}/quiz`, { quizName, questions });
-    toggleQuizCreation();
+    try {
+      await axios.post(`${process.env.REACT_APP_BASE_URL}/quiz`, { quizName, questions });
+      toggleQuizCreation();
+    } catch (e) {
+      setErrorMessage('Quiz malformed!');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+    }
   }, [quizName, questions]);
 
   const onCancelClicked = useCallback(() => {
@@ -57,10 +65,15 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
 
   return (
     <Container fluid className="vh-100 d-flex flex-column justify-content-center px-5 bg-light">
-      <Form onSubmit={() => {}}>
+      {errorMessage ? (
+        <Button variant="danger" className="mb-3" block disabled>
+          {errorMessage}
+        </Button>
+      ) : null}
+      <Form onSubmit={() => { }}>
         <Form.Group onChange={onQuizNameChanged}>
           <Form.Label>Quiz name</Form.Label>
-          <Form.Control placeholder="Enter quiz name" />
+          <Form.Control placeholder="Enter quiz name" required minLength={0} maxLength={100} />
         </Form.Group>
       </Form>
       {questions !== undefined && questions.map((question) => <Question question={question} key={question.title} />)}
