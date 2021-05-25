@@ -60,13 +60,13 @@ export const LoginForm = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="email">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" required />
+          <Form.Control type="email" placeholder="Enter email" maxLength={64} required />
           <Form.Text className="text-muted">We will never share your email with anyone else.</Form.Text>
         </Form.Group>
 
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" minLength={8} required />
+          <Form.Control type="password" placeholder="Password" minLength={8} maxLength={64} required />
         </Form.Group>
         <Button variant="primary" type="submit" block>
           sign in
@@ -134,13 +134,13 @@ export const SessionLoginForm = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="email">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control type="email" placeholder="Enter email" maxLength={64} required />
           <Form.Text className="text-muted">We will never share your email with anyone else.</Form.Text>
         </Form.Group>
 
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control type="password" placeholder="Password" minLength={8} maxLength={64} required />
         </Form.Group>
         <Button variant="primary" type="submit" block>
           sign in
