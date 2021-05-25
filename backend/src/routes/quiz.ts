@@ -60,7 +60,7 @@ const atLeastOneValid: CustomValidator = (answers) => {
 
 quizRoutes.post(
   '/',
-  body('quizName').isString().isLength({ min: 0, max: 100 }),
+  body('quizName').isString().isLength({ min: 0, max: 64 }),
   body('questions.*.title').isString().isLength({ max: 255 }),
   body('questions.*.points').isInt({ min: 0, max: 100 }),
   body('questions.*.answers.*.data').isString().isLength({ max: 255 }),

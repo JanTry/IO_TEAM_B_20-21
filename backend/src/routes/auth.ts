@@ -19,9 +19,9 @@ const privateKey = fs.readFileSync('resources/private.key');
 authRoutes.post(
   '/register',
   body('email').isEmail(),
-  body('password').isLength({ min: 8 }),
-  body('firstName').isLength({ min: 2 }),
-  body('lastName').isLength({ min: 2 }),
+  body('password').isLength({ min: 8, max: 64 }),
+  body('firstName').isLength({ min: 2, max: 64 }),
+  body('lastName').isLength({ min: 2, max: 64 }),
   body('role').custom(isStudent),
   async (req, res) => {
     const errors = validationResult(req);
@@ -53,22 +53,33 @@ authRoutes.post(
   }
 );
 
-authRoutes.post('/login', body('email').isEmail(), body('password').isLength({ min: 8 }), async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+authRoutes.post(
+  '/login',
+  body('email').isEmail().isLength({ max: 64 }),
+  body('password').isLength({ min: 8, max: 64 }),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  User.findOne({ email: req.body.email }, async (err, user) => {
-    if (!user) return res.status(400).json({ errors: [{ user: "This email doesn't match any user." }] });
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      return res.status(200).json({
-        success: true,
-        token: jwt.sign(
-          { userId: user._id, role: user.role, email: user.email, firstName: user.firstName, lastName: user.lastName },
-          privateKey,
-          { algorithm: 'RS256' }
-        ),
-      });
-    }
-    return res.status(400).json({ errors: [{ password: 'Invalid password.' }] });
-  });
-});
+    User.findOne({ email: req.body.email }, async (err, user) => {
+      if (!user) return res.status(400).json({ errors: [{ user: "This email doesn't match any user." }] });
+      if (await bcrypt.compare(req.body.password, user.password)) {
+        return res.status(200).json({
+          success: true,
+          token: jwt.sign(
+            {
+              userId: user._id,
+              role: user.role,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+            },
+            privateKey,
+            { algorithm: 'RS256' }
+          ),
+        });
+      }
+      return res.status(400).json({ errors: [{ password: 'Invalid password.' }] });
+    });
+  }
+);
