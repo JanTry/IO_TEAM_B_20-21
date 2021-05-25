@@ -8,7 +8,8 @@ import { QuestionDto, QuizDto } from './model';
 
 export const quizRoutes = express.Router();
 
-quizRoutes.get('/', (req, res) => {
+quizRoutes.get('/', teacherMiddleware, (req, res) => {
+  if (res.statusCode === 401) return res;
   Quiz.find({ authorId: res.locals.user._id }, (err, results) => {
     if (err) {
       res.status(500).send(err);

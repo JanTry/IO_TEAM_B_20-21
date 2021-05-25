@@ -12,9 +12,7 @@ enum Role {
   Student = 'student',
 }
 
-const isValidRole: CustomValidator = (value: Role | string) => {
-  return value === Role.Teacher || value === Role.Student;
-};
+const isStudent: CustomValidator = (value: Role | string) => value === Role.Student;
 
 const privateKey = fs.readFileSync('resources/private.key');
 
@@ -24,7 +22,7 @@ authRoutes.post(
   body('password').isLength({ min: 8 }),
   body('firstName').isLength({ min: 2 }),
   body('lastName').isLength({ min: 2 }),
-  body('role').custom(isValidRole),
+  body('role').custom(isStudent),
   async (req, res) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) return res.status(400).json({ errors: errors.array() });
