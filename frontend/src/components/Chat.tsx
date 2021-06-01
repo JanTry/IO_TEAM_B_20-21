@@ -17,6 +17,7 @@ import {
   Navbar,
   Nav,
 } from 'react-bootstrap';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useUser } from '../context/UserContext';
 import QuizViewer from './quizViewer/QuizViewer';
 
@@ -256,17 +257,21 @@ const Chat = () => {
             <Navbar.Text className="mt-1 mx-2">
               Access code: <b>{accessCode}</b>
             </Navbar.Text>
-            {sessionUrl ? (
-              <Navbar.Text className="mt-1 mx-2">
-                Link: <b>{sessionUrl}</b>
-              </Navbar.Text>
-            ) : null}
           </Nav>
           <Navbar.Text className="mt-1 mx-2">
             Signed in as: <b>{username}</b>
           </Navbar.Text>
-          <Button variant="danger" size="sm" onClick={handleLogout}>
-            Logout
+          {sessionUrl ? (
+            <Navbar.Text>
+              <CopyToClipboard text={sessionUrl}>
+                <Button className="mt-1 mx-2" size="sm">
+                  copy link for students
+                </Button>
+              </CopyToClipboard>
+            </Navbar.Text>
+          ) : null}
+          <Button className="mt-1 mx-2" variant="danger" size="sm" onClick={handleLogout}>
+            sign out
           </Button>
         </Navbar.Collapse>
       </Navbar>
