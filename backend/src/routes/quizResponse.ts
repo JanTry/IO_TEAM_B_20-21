@@ -62,13 +62,15 @@ quizResponseRoutes.get('/points/:responseId', (req, res) => {
             res.status(500).send(error);
           }
           const questionMetadata = getQuestionMetadata(quiz.questions);
-
+          const maxPoints = Object.values(questionMetadata)
+            .map((x) => x.points)
+            .reduce((acc, curr) => acc + curr, 0);
           const points = questionResponses.reduce((acc, { questionId, answerId }) => {
             const metadata = questionMetadata[questionId.toString()] ?? { points: 0, correctAnswers: [] };
             return metadata.correctAnswers.find((a) => a === answerId.toString()) ? acc + metadata.points : acc;
           }, 0);
 
-          res.status(200).send({ points });
+          res.status(200).send({ points, maxPoints });
         });
       } else {
         res.sendStatus(500);
