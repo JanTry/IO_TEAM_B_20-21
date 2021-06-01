@@ -102,6 +102,7 @@ const Chat = () => {
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/quizResponse/points/${resId}`);
 
         sessionStorage.setItem('points', response.data.points);
+        sessionStorage.setItem('maxPoints', response.data.maxPoints);
       };
 
       socket.on('end-quiz', async () => {
@@ -109,7 +110,9 @@ const Chat = () => {
         setQuestion({ _id: '', title: '', answers: [] });
         await fetchQuizResponse();
 
-        setQuizMessage(`Quiz ended with ${sessionStorage.getItem('points')} points`);
+        setQuizMessage(
+          `Quiz ended with ${sessionStorage.getItem('points')}/${sessionStorage.getItem('maxPoints')} points`
+        );
       });
     }
   }, [user]);
