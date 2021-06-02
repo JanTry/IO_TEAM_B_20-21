@@ -42,12 +42,12 @@ const RegistrationForm = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="firstName">
           <Form.Label>Firstname</Form.Label>
-          <Form.Control type="text" placeholder="Enter your firstname" minLength={2} maxLength={64} required />
+          <Form.Control type="text" placeholder="Enter your firstname" minLength={2} maxLength={12} required />
         </Form.Group>
 
         <Form.Group controlId="lastName">
           <Form.Label>Lastname</Form.Label>
-          <Form.Control type="text" placeholder="Enter your lastname" minLength={2} maxLength={64} required />
+          <Form.Control type="text" placeholder="Enter your lastname" minLength={2} maxLength={20} required />
         </Form.Group>
 
         <Form.Group controlId="email">

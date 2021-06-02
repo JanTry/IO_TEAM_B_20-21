@@ -41,7 +41,7 @@ export const quizHistogram = async (quizId: string) => {
     return getPoints(questionResponses, questionMetadata);
   });
   const maxPoints = getMaxPoints(questionMetadata);
-  const histogram = Object.fromEntries(Array.from(Array(maxPoints).keys()).map((x) => [x, 0]));
+  const histogram = Object.fromEntries(Array.from(Array(maxPoints + 1).keys()).map((x) => [x, 0]));
   points.forEach((p) => {
     histogram[p] += 1;
   });

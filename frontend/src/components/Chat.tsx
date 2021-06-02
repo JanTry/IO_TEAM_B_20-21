@@ -53,6 +53,7 @@ const Chat = () => {
 
   const [quizId, setQuizId] = useState('');
   const [quizes, setQuizes] = useState([] as Quiz[]);
+  const [quizStatistics, setQuizStatistics] = useState([]);
   const [chosenQuiz, setChosenQuiz] = useState('');
   const [quizStatus, setQuizStatus] = useState('');
   const [isCreatingQuiz, setIsCreatingQuiz] = useState(false);
@@ -185,9 +186,20 @@ const Chat = () => {
     setQuizStatus('started');
   };
 
-  const handleQuizEnd = () => {
+  const handleQuizEnd = async () => {
     socket.emit('end-quiz', quizId);
     setQuizStatus('ended');
+    const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quizResponse/histogram/${quizId}`);
+    console.log(result.data);
+    // eslint-disable-next-line array-callback-return
+    // Object.entries(result.data).map((key, value) => {
+    //   console.log(`key: ${key}, value: ${value}`);
+    // });
+    // eslint-disable-next-line array-callback-return
+    Object.entries(result.data).map((entry) => {
+      console.log(`entry: ${entry}`);
+    });
+    console.log(quizStatistics);
   };
 
   const handleQuizCreation = () => {
@@ -224,6 +236,15 @@ const Chat = () => {
             </h4>
           </div>
         ) : null}
+        {/* {quizStatus === 'ended' ? (
+          // eslint-disable-next-line array-callback-return
+          Object.entries(quizStatistics).map((key, value) => {
+            <div>
+              <h6>{key}</h6>
+              <h6>{value}</h6>
+            </div>
+          })
+        ) : null} */}
         <DropdownButton className="m-4" id="dropdown-basic-button" title="Choose quiz">
           {quizes.map((quiz) => (
             <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={quiz.id}>
@@ -287,7 +308,7 @@ const Chat = () => {
 
           <Form onSubmit={handleMessageSubmition} className="fixed-bottom w-50 p-2 bg-secondary">
             <InputGroup>
-              <FormControl id="message" placeholder="enter message" />
+              <FormControl id="message" placeholder="enter message" maxLength={90} />
               <InputGroup.Append>
                 <Button type="submit" variant="success">
                   send message
