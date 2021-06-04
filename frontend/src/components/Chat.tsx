@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
@@ -19,6 +19,7 @@ import {
 } from 'react-bootstrap';
 import { useUser } from '../context/UserContext';
 import QuizViewer from './quizViewer/QuizViewer';
+import { getReactions, reactionIcons, Reaction } from './Reactions';
 
 const socket = io.connect(process.env.REACT_APP_BASE_URL!);
 
@@ -60,6 +61,9 @@ const Chat = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [quizMessage, setQuizMessage] = useState('');
+  const [reactions, setReactions] = useState({} as { [reactionId: number]: Reaction });
+  const reactionsData = useRef({});
+  const expiryTime = parseInt(process.env.REACT_APP_REACTION_EXPIRY_TIME as string, 10);
 
   const { user, username, sessionId, accessCode, sessionUrl } = useUser();
 
@@ -127,6 +131,16 @@ const Chat = () => {
   }, [message]);
 
   useEffect(() => {
+    socket.on('reactions', (newReactionsData: any) => {
+      reactionsData.current = newReactionsData;
+      setReactions(getReactions(newReactionsData, username));
+      setTimeout(() => {
+        setReactions(getReactions(reactionsData.current, username));
+      }, expiryTime);
+    });
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quiz`);
       if (result.data) {
@@ -188,6 +202,10 @@ const Chat = () => {
 
   const handleQuizCreation = () => {
     setIsCreatingQuiz(!isCreatingQuiz);
+  };
+
+  const handleReaction = (i: number) => {
+    socket.emit('reaction', i);
   };
 
   const handleLogout = () => {
@@ -276,7 +294,6 @@ const Chat = () => {
               </ListGroup.Item>
             ))}
           </ListGroup>
-
           <Form onSubmit={handleMessageSubmition} className="fixed-bottom w-50 p-2 bg-secondary">
             <InputGroup>
               <FormControl id="message" placeholder="enter message" />
@@ -287,6 +304,18 @@ const Chat = () => {
               </InputGroup.Append>
             </InputGroup>
           </Form>
+          <Row className="fixed-bottom mb-5 ml-1">
+            {reactionIcons.map((icon, i) => (
+              <Button
+                variant={reactions[i] && reactions[i].isBlocked ? 'dark' : 'light'}
+                size="sm"
+                className="ml-1"
+                onClick={() => handleReaction(i)}
+              >
+                {icon} <b>{reactions[i] ? reactions[i].count : 0}</b>
+              </Button>
+            ))}
+          </Row>
         </Col>
         <Col className="vh-100">
           {user && user.role === 'student' ? (
