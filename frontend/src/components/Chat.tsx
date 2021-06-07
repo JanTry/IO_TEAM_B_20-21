@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
 import {
@@ -18,6 +18,7 @@ import {
   Nav,
 } from 'react-bootstrap';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Chart } from 'react-google-charts';
 import { useUser } from '../context/UserContext';
 import QuizViewer from './quizViewer/QuizViewer';
 
@@ -53,7 +54,7 @@ const Chat = () => {
 
   const [quizId, setQuizId] = useState('');
   const [quizes, setQuizes] = useState([] as Quiz[]);
-  const [quizStatistics, setQuizStatistics] = useState([]);
+  const [quizStatistics, setQuizStatistics] = useState([] as [string, unknown][]);
   const [chosenQuiz, setChosenQuiz] = useState('');
   const [quizStatus, setQuizStatus] = useState('');
   const [isCreatingQuiz, setIsCreatingQuiz] = useState(false);
@@ -175,6 +176,7 @@ const Chat = () => {
   const handleQuizIdSelect = (event: any) => {
     setQuizId(event);
     setQuizStatus('not yet started');
+    setQuizStatistics([]);
     const filteredQuiz = quizes.find((quiz) => quiz.id === event);
     if (filteredQuiz) {
       setChosenQuiz(filteredQuiz.name);
@@ -190,16 +192,14 @@ const Chat = () => {
     socket.emit('end-quiz', quizId);
     setQuizStatus('ended');
     const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quizResponse/histogram/${quizId}`);
-    console.log(result.data);
-    // eslint-disable-next-line array-callback-return
-    // Object.entries(result.data).map((key, value) => {
-    //   console.log(`key: ${key}, value: ${value}`);
-    // });
-    // eslint-disable-next-line array-callback-return
-    Object.entries(result.data).map((entry) => {
-      console.log(`entry: ${entry}`);
-    });
-    console.log(quizStatistics);
+
+    const statisticsData: [string, unknown][] = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(result.data)) {
+      statisticsData.push([`number of points: ${key}`, value]);
+    }
+
+    setQuizStatistics(statisticsData);
   };
 
   const handleQuizCreation = () => {
@@ -212,7 +212,7 @@ const Chat = () => {
   };
 
   const TeacherPanel = () => {
-    if (isCreatingQuiz === true) {
+    if (isCreatingQuiz) {
       return (
         <div>
           <QuizViewer toggleQuizCreation={() => setIsCreatingQuiz(false)} />
@@ -236,15 +236,20 @@ const Chat = () => {
             </h4>
           </div>
         ) : null}
-        {/* {quizStatus === 'ended' ? (
-          // eslint-disable-next-line array-callback-return
-          Object.entries(quizStatistics).map((key, value) => {
-            <div>
-              <h6>{key}</h6>
-              <h6>{value}</h6>
-            </div>
-          })
-        ) : null} */}
+        {quizStatus === 'ended' ? (
+          <Chart
+            width="500px"
+            height="300px"
+            chartType="Bar"
+            loader={<div>Loading Chart</div>}
+            data={[['', 'students with this score:'], ...quizStatistics]}
+            options={{
+              legend: { position: 'none' },
+              colors: ['gray'],
+            }}
+            rootProps={{ 'data-testid': '2' }}
+          />
+        ) : null}
         <DropdownButton className="m-4" id="dropdown-basic-button" title="Choose quiz">
           {quizes.map((quiz) => (
             <Dropdown.Item onSelect={handleQuizIdSelect} eventKey={quiz.id}>
