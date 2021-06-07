@@ -16,10 +16,12 @@ import {
   Dropdown,
   Navbar,
   Nav,
+  OverlayTrigger,
+  Tooltip,
 } from 'react-bootstrap';
 import { useUser } from '../context/UserContext';
 import QuizViewer from './quizViewer/QuizViewer';
-import { getReactions, reactionIcons, Reaction } from './Reactions';
+import { getReactions, reactionIcons, Reaction, ReactionObject, reactionUsers } from './Reactions';
 
 const socket = io.connect(process.env.REACT_APP_BASE_URL!);
 
@@ -41,10 +43,6 @@ interface Quiz {
   id: string;
   name: string;
   questions: Number;
-}
-
-interface ReactionObject {
-  [reactionId: number]: Reaction;
 }
 
 const Chat = () => {
@@ -310,14 +308,24 @@ const Chat = () => {
           </Form>
           <Row className="fixed-bottom mb-5 ml-1">
             {reactionIcons.map((icon, i) => (
-              <Button
-                variant={reactions[i] && reactions[i].isBlocked ? 'dark' : 'light'}
-                size="sm"
-                className="ml-1"
-                onClick={() => handleReaction(i)}
+              <OverlayTrigger
+                placement="top"
+                delay={{ show: 250, hide: 400 }}
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    {reactionUsers(reactions, i)}
+                  </Tooltip>
+                )}
               >
-                {icon} <b>{reactions[i] ? reactions[i].count : 0}</b>
-              </Button>
+                <Button
+                  variant={reactions[i] && reactions[i].isBlocked ? 'dark' : 'light'}
+                  size="sm"
+                  className="ml-1"
+                  onClick={() => handleReaction(i)}
+                >
+                  {icon} <b>{reactions[i] ? reactions[i].count : 0}</b>
+                </Button>
+              </OverlayTrigger>
             ))}
           </Row>
         </Col>
