@@ -43,6 +43,10 @@ interface Quiz {
   questions: Number;
 }
 
+interface ReactionObject {
+  [reactionId: number]: Reaction;
+}
+
 const Chat = () => {
   const history = useHistory();
   const [message, setMessage] = useState('');
@@ -61,7 +65,7 @@ const Chat = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [quizMessage, setQuizMessage] = useState('');
-  const [reactions, setReactions] = useState({} as { [reactionId: number]: Reaction });
+  const [reactions, setReactions] = useState({} as ReactionObject);
   const reactionsData = useRef({});
   const expiryTime = parseInt(process.env.REACT_APP_REACTION_EXPIRY_TIME as string, 10);
 
@@ -204,8 +208,8 @@ const Chat = () => {
     setIsCreatingQuiz(!isCreatingQuiz);
   };
 
-  const handleReaction = (i: number) => {
-    socket.emit('reaction', i);
+  const handleReaction = (reactionId: number) => {
+    socket.emit('reaction', reactionId);
   };
 
   const handleLogout = () => {

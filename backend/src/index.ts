@@ -48,7 +48,7 @@ type ChatSocket = Socket & {
   sessionId: string;
 };
 
-var reactions = {};
+const reactions = {};
 
 io.on('connection', (socket: ChatSocket) => {
   console.log('user connected');
@@ -68,7 +68,7 @@ io.on('connection', (socket: ChatSocket) => {
         msg: 'Success',
       });
       console.log(`User ${userId} joined room ${sessionId}`);
-      io.in(socket.sessionId).emit('reactions', reactions);
+      io.in(socket.sessionId).emit('reactions', reactions[sessionId] || {});
     } else {
       callback({
         status: 'error',
@@ -90,10 +90,12 @@ io.on('connection', (socket: ChatSocket) => {
 
   socket.on('reaction', (reactionId) => {
     console.log(`user ${socket.userId} reaction ${reactionId}`);
-    var reactionMap =  reactions[reactionId] || {};
+    const sessionReactions = reactions[socket.sessionId] || {};
+    const reactionMap =  sessionReactions[reactionId] || {};
     reactionMap[socket.userId] = new Date();
-    reactions[reactionId] = reactionMap;
-    io.in(socket.sessionId).emit('reactions', reactions);
+    sessionReactions[reactionId] = reactionMap;
+    reactions[socket.sessionId] = sessionReactions;
+    io.in(socket.sessionId).emit('reactions', sessionReactions);
   });
 
   socket.on('disconnect', () => {
