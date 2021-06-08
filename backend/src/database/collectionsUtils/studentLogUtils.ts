@@ -9,7 +9,7 @@ export const addStudentLog = async (logData) => {
 };
 
 export const logUserJoin = async (studentId, sessionId) => {
-  User.findOne({ _id: studentId, role: 'student' }, (err) => {
+  User.findOne({ _id: studentId, role: 'student' }, function (err) {
     if (err) {
       console.log(err);
     } else {
@@ -23,7 +23,7 @@ export const logUserJoin = async (studentId, sessionId) => {
 };
 
 export const logUserLeave = async (studentId, sessionId) => {
-  User.findOne({ _id: studentId, role: 'student' }, (err) => {
+  User.findOne({ _id: studentId, role: 'student' }, function (err) {
     if (err) {
       console.log(err);
     } else {

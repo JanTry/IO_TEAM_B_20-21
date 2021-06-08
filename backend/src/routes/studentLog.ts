@@ -3,7 +3,7 @@ import { StudentLog } from '../database/models/studentLog';
 
 export const logRoutes = express.Router();
 
-logRoutes.get('/:sessionId', (req, res) => {
+logRoutes.get('/logs/:sessionId', (req, res) => {
   const { sessionId } = req.params;
   StudentLog.find({ sessionId }, { _id: 0, sessionId: 0 }, null, (err, results) => {
     if (err) {
