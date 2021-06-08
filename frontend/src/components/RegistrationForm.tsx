@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { useHistory, Link } from 'react-router-dom';
 import registerService from '../services/register';
+import ErrorDisplayer from './Error';
 
 const RegistrationForm = () => {
+  const [errorMessage, setErrorMessage] = useState('');
   const history = useHistory();
 
   const handleSubmit = async (event: any) => {
@@ -26,7 +29,10 @@ const RegistrationForm = () => {
       event.target.email.value = '';
       event.target.password.value = '';
     } catch (e) {
-      console.error(e);
+      setErrorMessage(`${e.response.data.error}`);
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
     }
   };
 
@@ -36,22 +42,22 @@ const RegistrationForm = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="firstName">
           <Form.Label>Firstname</Form.Label>
-          <Form.Control type="text" placeholder="Enter your firstname" />
+          <Form.Control type="text" placeholder="Enter your firstname" minLength={2} required />
         </Form.Group>
 
         <Form.Group controlId="lastName">
           <Form.Label>Lastname</Form.Label>
-          <Form.Control type="text" placeholder="Enter your lastname" />
+          <Form.Control type="text" placeholder="Enter your lastname" minLength={2} required />
         </Form.Group>
 
         <Form.Group controlId="email">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control type="email" placeholder="Enter email" required />
         </Form.Group>
 
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control type="password" placeholder="Password" minLength={8} required />
         </Form.Group>
 
         <Button variant="primary" type="submit" block className="mb-5">
@@ -67,6 +73,7 @@ const RegistrationForm = () => {
           </Link>
         </Form.Group>
       </Form>
+      <ErrorDisplayer errorMessage={errorMessage} />
     </Container>
   );
 };

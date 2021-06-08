@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
+import { GuardProvider, GuardedRoute, GuardFunction } from 'react-router-guards';
 import Entry from './components/Entry';
 import { LoginForm, SessionLoginForm } from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
@@ -18,23 +19,40 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+const authGuard: GuardFunction = (to, from, next) => {
+  const token = sessionStorage.getItem('jwt');
+  if (token) {
+    next();
+  } else {
+    next.redirect('/');
+  }
+};
+
+const ChatWrapper = () => (
+  <QuestionCreatorProvider>
+    <Chat />
+  </QuestionCreatorProvider>
+);
+
 const App = () => (
   <Router>
-    <Switch>
+    <GuardProvider guards={[authGuard]}>
       <UserProvider>
-        <Route exact path="/" component={Entry} />
-        <Route exact path="/login" component={LoginForm} />
-        <Route exact path="/session-id/:sessionId/access-code/:accessCode" component={SessionLoginForm} />
-        <Route exact path="/register" component={RegistrationForm} />
-        <Route exact path="/dashboard" component={Dashboard} />
-        <Route exact path="/chat" component={Chat} />
-        <Route exact path="/quiz">
-          <QuestionCreatorProvider>
-            <QuizViewer />
-          </QuestionCreatorProvider>
-        </Route>
+        <Switch>
+          <Route exact path="/" component={Entry} />
+          <Route exact path="/login" component={LoginForm} />
+          <Route exact path="/register" component={RegistrationForm} />
+          <GuardedRoute exact path="/session-id/:sessionId/access-code/:accessCode" component={SessionLoginForm} />
+          <GuardedRoute exact path="/dashboard" component={Dashboard} />
+          <GuardedRoute exact path="/chat" component={ChatWrapper} />
+          <GuardedRoute exact path="/quiz">
+            <QuestionCreatorProvider>
+              <QuizViewer toggleQuizCreation={() => { }} />
+            </QuestionCreatorProvider>
+          </GuardedRoute>
+        </Switch>
       </UserProvider>
-    </Switch>
+    </GuardProvider>
   </Router>
 );
 

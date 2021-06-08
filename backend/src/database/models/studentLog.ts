@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 export interface StudentLogType {
   studentId: mongoose.Types.ObjectId;
   sessionId: mongoose.Types.ObjectId;
-  eventType: string;
+  studentName: String;
+  eventType: String;
   time?: Date;
 }
 
@@ -16,6 +17,9 @@ const studentLogSchema = new mongoose.Schema(
     sessionId: {
       type: mongoose.Types.ObjectId,
       required: true,
+    },
+    studentName: {
+      type: String
     },
     eventType: {
       type: String,

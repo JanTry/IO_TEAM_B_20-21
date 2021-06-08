@@ -1,18 +1,22 @@
 /* eslint-disable no-unused-expressions */
+import React, { useState } from 'react';
 import { useHistory, Link, useParams } from 'react-router-dom';
 import { Form, Button, Container } from 'react-bootstrap';
 import jwt from 'jwt-decode';
 import loginService from '../services/login';
 import { useUser } from '../context/UserContext';
+import ErrorDisplayer from './Error';
 
 interface User {
   firstName: string;
   lastName: string;
   email: string;
   role: string;
+  userId: string;
 }
 
 export const LoginForm = () => {
+  const [errorMessage, setErrorMessage] = useState('');
   const { isLecturer, updateUser } = useUser();
 
   const history = useHistory();
@@ -35,13 +39,18 @@ export const LoginForm = () => {
       sessionStorage.setItem('role', decodedUser.role);
       sessionStorage.setItem('firstName', decodedUser.firstName);
       sessionStorage.setItem('lastName', decodedUser.lastName);
+      sessionStorage.setItem('userId', decodedUser.userId);
 
       history.push('/dashboard');
 
       event.target.email.value = '';
       event.target.password.value = '';
     } catch (e) {
-      console.error(e);
+      setErrorMessage(`${e.response.data.error}`);
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      event.target.password.value = '';
     }
   };
 
@@ -51,13 +60,13 @@ export const LoginForm = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="email">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control type="email" placeholder="Enter email" maxLength={64} required />
           <Form.Text className="text-muted">We will never share your email with anyone else.</Form.Text>
         </Form.Group>
 
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control type="password" placeholder="Password" minLength={8} maxLength={64} required />
         </Form.Group>
         <Button variant="primary" type="submit" block>
           sign in
@@ -73,13 +82,15 @@ export const LoginForm = () => {
           </Form.Group>
         ) : null}
       </Form>
+      <ErrorDisplayer errorMessage={errorMessage} />
     </Container>
   );
 };
 
 export const SessionLoginForm = () => {
+  const [errorMessage, setErrorMessage] = useState('');
   const { sessionId, accessCode } = useParams<{ sessionId: string; accessCode: string }>();
-  const { user, updateUserId, updateSessionId, updateAccessCode, isLecturer, updateUser } = useUser();
+  const { updateUsername, updateSessionId, updateAccessCode, isLecturer, updateUser } = useUser();
 
   const history = useHistory();
 
@@ -101,7 +112,7 @@ export const SessionLoginForm = () => {
       sessionStorage.setItem('lastName', decodedUser.lastName);
       sessionStorage.setItem('sessionId', sessionId);
       sessionStorage.setItem('accessCode', accessCode);
-      updateUserId(`${decodedUser.firstName} ${decodedUser.lastName}`);
+      updateUsername(`${decodedUser.firstName} ${decodedUser.lastName}`);
       updateSessionId(sessionId);
       updateAccessCode(accessCode);
       history.push('/chat');
@@ -109,7 +120,11 @@ export const SessionLoginForm = () => {
       event.target.email.value = '';
       event.target.password.value = '';
     } catch (e) {
-      console.error(e);
+      setErrorMessage(`${e.response.data.error}`);
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      event.target.password.value = '';
     }
   };
 
@@ -119,13 +134,13 @@ export const SessionLoginForm = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="email">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control type="email" placeholder="Enter email" maxLength={64} required />
           <Form.Text className="text-muted">We will never share your email with anyone else.</Form.Text>
         </Form.Group>
 
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control type="password" placeholder="Password" minLength={8} maxLength={64} required />
         </Form.Group>
         <Button variant="primary" type="submit" block>
           sign in
@@ -141,6 +156,7 @@ export const SessionLoginForm = () => {
           </Form.Group>
         ) : null}
       </Form>
+      <ErrorDisplayer errorMessage={errorMessage} />
     </Container>
   );
 };

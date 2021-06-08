@@ -9,6 +9,7 @@ export interface AnswerValue {
 export interface QuestionValue {
   title: string;
   answers: AnswerValue[];
+  points: number;
 }
 
 interface QuestionProps {
@@ -19,7 +20,7 @@ const Question: React.FunctionComponent<QuestionProps> = (props: QuestionProps) 
   const { question } = props;
   return (
     <div>
-      <h2>Question: {question.title}</h2>
+      <p>Question: {question.title}</p>
       <Table striped bordered>
         <thead>
           <tr>
