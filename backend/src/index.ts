@@ -14,6 +14,8 @@ import { Session } from './database/models/session';
 import { quizRoutes } from './routes/quiz';
 import { quizResponseRoutes } from './routes/quizResponse';
 import { authMiddleware } from './middleware/auth';
+import { logUserJoin, logUserLeave } from './database/collectionsUtils/studentLogUtils';
+import { logRoutes } from './routes/studentLog';
 import { QuizResponse } from './database/models/quizResponse';
 // import { populateDatabase, createSampleUsers } from './database/dbPopulate';
 
@@ -42,6 +44,7 @@ app.use('/auth', authRoutes);
 app.use('/session', authMiddleware, sessionRoutes);
 app.use('/quiz', authMiddleware, quizRoutes);
 app.use('/quizResponse', authMiddleware, quizResponseRoutes);
+app.use('/studentLog', logRoutes);
 
 type ChatSocket = Socket & {
   userId: string;
@@ -68,6 +71,7 @@ io.on('connection', (socket: ChatSocket) => {
         msg: 'Success',
       });
       console.log(`User ${userId} joined room ${sessionId}`);
+      logUserJoin(userId, sessionId);
       io.in(socket.sessionId).emit('reactions', reactions[sessionId] || {});
     } else {
       callback({
@@ -101,6 +105,7 @@ io.on('connection', (socket: ChatSocket) => {
   socket.on('disconnect', () => {
     socket.leave(socket.id);
     socket.leave(socket.sessionId);
+    logUserLeave(socket.userId, socket.sessionId);
     console.log(`user ${socket.userId} disconnected`);
   });
 });
