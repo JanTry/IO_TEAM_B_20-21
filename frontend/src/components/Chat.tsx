@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect, useRef } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
 import {
@@ -20,6 +20,8 @@ import {
   Tooltip,
   Table,
 } from 'react-bootstrap';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Chart } from 'react-google-charts';
 import { useUser } from '../context/UserContext';
 import QuizViewer from './quizViewer/QuizViewer';
 import { getReactions, reactionIcons, Reaction, ReactionObject, reactionUsers } from './Reactions';
@@ -57,6 +59,7 @@ const Chat = () => {
 
   const [quizId, setQuizId] = useState('');
   const [quizes, setQuizes] = useState([] as Quiz[]);
+  const [quizStatistics, setQuizStatistics] = useState([] as [string, unknown][]);
   const [chosenQuiz, setChosenQuiz] = useState('');
   const [quizStatus, setQuizStatus] = useState('');
   const [isCreatingQuiz, setIsCreatingQuiz] = useState(false);
@@ -113,6 +116,7 @@ const Chat = () => {
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/quizResponse/points/${resId}`);
 
         sessionStorage.setItem('points', response.data.points);
+        sessionStorage.setItem('maxPoints', response.data.maxPoints);
       };
 
       socket.on('end-quiz', async () => {
@@ -120,7 +124,9 @@ const Chat = () => {
         setQuestion({ _id: '', title: '', answers: [] });
         await fetchQuizResponse();
 
-        setQuizMessage(`Quiz ended with ${sessionStorage.getItem('points')} points`);
+        setQuizMessage(
+          `Quiz ended with ${sessionStorage.getItem('points')}/${sessionStorage.getItem('maxPoints')} points`
+        );
       });
     }
   }, [user]);
@@ -204,6 +210,7 @@ const Chat = () => {
   const handleQuizIdSelect = (event: any) => {
     setQuizId(event);
     setQuizStatus('not yet started');
+    setQuizStatistics([]);
     const filteredQuiz = quizes.find((quiz) => quiz.id === event);
     if (filteredQuiz) {
       setChosenQuiz(filteredQuiz.name);
@@ -215,9 +222,18 @@ const Chat = () => {
     setQuizStatus('started');
   };
 
-  const handleQuizEnd = () => {
+  const handleQuizEnd = async () => {
     socket.emit('end-quiz', quizId);
     setQuizStatus('ended');
+    const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/quizResponse/histogram/${quizId}`);
+
+    const statisticsData: [string, unknown][] = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(result.data)) {
+      statisticsData.push([`number of points: ${key}`, value]);
+    }
+
+    setQuizStatistics(statisticsData);
   };
 
   const handleQuizCreation = () => {
@@ -239,7 +255,7 @@ const Chat = () => {
   };
 
   const TeacherPanel = () => {
-    if (isCreatingQuiz === true) {
+    if (isCreatingQuiz) {
       return (
         <div>
           <QuizViewer toggleQuizCreation={() => setIsCreatingQuiz(false)} />
@@ -272,6 +288,20 @@ const Chat = () => {
               {quizStatus}
             </h4>
           </div>
+        ) : null}
+        {quizStatus === 'ended' ? (
+          <Chart
+            width="500px"
+            height="300px"
+            chartType="Bar"
+            loader={<div>Loading Chart</div>}
+            data={[['', 'students with this score:'], ...quizStatistics]}
+            options={{
+              legend: { position: 'none' },
+              colors: ['gray'],
+            }}
+            rootProps={{ 'data-testid': '2' }}
+          />
         ) : null}
         <DropdownButton className="m-4" id="dropdown-basic-button" title="Choose quiz">
           {quizes.map((quiz) => (
@@ -309,17 +339,21 @@ const Chat = () => {
             <Navbar.Text className="mt-1 mx-2">
               Access code: <b>{accessCode}</b>
             </Navbar.Text>
-            {sessionUrl ? (
-              <Navbar.Text className="mt-1 mx-2">
-                Link: <b>{sessionUrl}</b>
-              </Navbar.Text>
-            ) : null}
           </Nav>
           <Navbar.Text className="mt-1 mx-2">
             Signed in as: <b>{username}</b>
           </Navbar.Text>
-          <Button variant="danger" size="sm" onClick={handleLogout}>
-            Logout
+          {sessionUrl ? (
+            <Navbar.Text>
+              <CopyToClipboard text={sessionUrl}>
+                <Button className="mt-1 mx-2" size="sm">
+                  copy link for students
+                </Button>
+              </CopyToClipboard>
+            </Navbar.Text>
+          ) : null}
+          <Button className="mt-1 mx-2" variant="danger" size="sm" onClick={handleLogout}>
+            sign out
           </Button>
         </Navbar.Collapse>
       </Navbar>
@@ -334,7 +368,7 @@ const Chat = () => {
           </ListGroup>
           <Form onSubmit={handleMessageSubmition} className="fixed-bottom w-50 p-2 bg-secondary">
             <InputGroup>
-              <FormControl id="message" placeholder="enter message" />
+              <FormControl id="message" placeholder="enter message" maxLength={90} />
               <InputGroup.Append>
                 <Button type="submit" variant="success">
                   send message
