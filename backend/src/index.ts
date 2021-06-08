@@ -16,6 +16,7 @@ import { quizResponseRoutes } from './routes/quizResponse';
 import { authMiddleware } from './middleware/auth';
 import { logUserJoin, logUserLeave } from './database/collectionsUtils/studentLogUtils';
 import { logRoutes } from './routes/studentLog';
+import { QuizResponse } from './database/models/quizResponse';
 // import { populateDatabase, createSampleUsers } from './database/dbPopulate';
 
 dbConnect();
@@ -46,29 +47,29 @@ app.use('/quizResponse', authMiddleware, quizResponseRoutes);
 app.use('/studentLog', logRoutes);
 
 type ChatSocket = Socket & {
-  userID: string;
-  sessionID: string;
+  userId: string;
+  sessionId: string;
 };
 
 io.on('connection', (socket: ChatSocket) => {
   console.log('user connected');
 
   socket.on('chat-message', (msg) => {
-    io.in(socket.sessionID).emit('chat-message', { from: socket.userID, msg });
+    io.in(socket.sessionId).emit('chat-message', { from: socket.userId, msg });
   });
 
-  socket.on('join', ({ userID, sessionID }, callback) => {
-    const session = Session.findOne({ _id: sessionID, online: true });
+  socket.on('join', ({ userId, sessionId }, callback) => {
+    const session = Session.findOne({ _id: sessionId, online: true });
     if (session) {
-      socket.userID = userID;
-      socket.sessionID = sessionID;
-      socket.join(sessionID);
+      socket.userId = userId;
+      socket.sessionId = sessionId;
+      socket.join(sessionId);
       callback({
         status: 'ok',
         msg: 'Success',
       });
-      console.log(`User ${userID} joined room ${sessionID}`);
-      logUserJoin(userID, sessionID);
+      console.log(`User ${userId} joined room ${sessionId}`);
+      logUserJoin(userId, sessionId);
     } else {
       callback({
         status: 'error',
@@ -78,20 +79,21 @@ io.on('connection', (socket: ChatSocket) => {
   });
 
   socket.on('start-quiz', (quizId) => {
-    console.log(quizId);
-    socket.to(socket.sessionID).emit('start-quiz', { quizId });
+    console.log(`starting quiz with id: ${quizId} in room ${socket.sessionId}`);
+    socket.to(socket.sessionId).emit('start-quiz', { quizId });
   });
 
-  socket.on('end-quiz', (msg) => {
-    console.log(msg);
-    socket.to(socket.sessionID).emit('end-quiz');
+  socket.on('end-quiz', (quizId) => {
+    QuizResponse.updateMany({ sessionId: socket.sessionId, quizId }, { $set: { isEnded: true } }, null, () =>
+      socket.to(socket.sessionId).emit('end-quiz')
+    );
   });
 
   socket.on('disconnect', () => {
     socket.leave(socket.id);
-    socket.leave(socket.sessionID);
-    console.log('user disconnected');
-    logUserLeave(socket.userID, socket.sessionID);
+    socket.leave(socket.sessionId);
+    logUserLeave(socket.userId, socket.sessionId);
+    console.log(`user ${socket.userId} disconnected`);
   });
 });
 

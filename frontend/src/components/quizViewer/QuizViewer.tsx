@@ -1,18 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Container } from 'react-bootstrap';
+import axios from 'axios';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { Button, Container, Form } from 'react-bootstrap';
 import { useQuestionCreator } from '../../context/QuestionCreatorContext';
 import Question, { QuestionValue } from './Question';
 import QuestionCreator from './QuestionCreator';
 
 interface QuizViewerProps {
   quizId?: number | undefined;
+  toggleQuizCreation: () => void;
 }
 
 const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerProps) => {
-  const { quizId } = props;
+  const { quizId, toggleQuizCreation } = props;
   const { currentQuestion, isCreatingQuestion, clearCurrentQuestion, toggleIsCreatingQuestion } = useQuestionCreator();
   const [questions, setQuestions] = useState<QuestionValue[]>();
   const [didQuizUpdate, setDidQuizUpdate] = useState(false);
+  const [quizName, setQuizName] = useState('');
 
   useEffect(() => {
     if (quizId !== undefined) {
@@ -39,15 +42,27 @@ const QuizViewer: React.FunctionComponent<QuizViewerProps> = (props: QuizViewerP
 
   const onSaveChangesClicked = useCallback(async () => {
     // save changes to db
-    const url = 'http://localhost:4000/quiz';
-  }, []);
+    await axios.post(`${process.env.REACT_APP_BASE_URL}/quiz`, { quizName, questions });
+    toggleQuizCreation();
+  }, [quizName, questions]);
 
   const onCancelClicked = useCallback(() => {
     // if quizId undefined exit else view old
+    toggleQuizCreation();
   }, []);
+
+  const onQuizNameChanged = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuizName(e.target.value);
+  };
 
   return (
     <Container fluid className="vh-100 d-flex flex-column justify-content-center px-5 bg-light">
+      <Form onSubmit={() => {}}>
+        <Form.Group onChange={onQuizNameChanged}>
+          <Form.Label>Quiz name</Form.Label>
+          <Form.Control placeholder="Enter quiz name" />
+        </Form.Group>
+      </Form>
       {questions !== undefined && questions.map((question) => <Question question={question} key={question.title} />)}
       {isCreatingQuestion ? (
         <QuestionCreator />

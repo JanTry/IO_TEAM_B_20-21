@@ -24,7 +24,7 @@ const QuestionCreator: React.FunctionComponent = () => {
 
   const onSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     if (title !== '' && answers !== undefined) {
-      updateCurrentQuestion({ title, answers });
+      updateCurrentQuestion({ title, answers, points:1 });
     }
     e.preventDefault();
     toggleIsCreatingQuestion();

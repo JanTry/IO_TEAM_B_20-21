@@ -18,6 +18,12 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+const ChatWrapper = () => (
+  <QuestionCreatorProvider>
+    <Chat />
+  </QuestionCreatorProvider>
+);
+
 const App = () => (
   <Router>
     <Switch>
@@ -27,10 +33,10 @@ const App = () => (
         <Route exact path="/session-id/:sessionId/access-code/:accessCode" component={SessionLoginForm} />
         <Route exact path="/register" component={RegistrationForm} />
         <Route exact path="/dashboard" component={Dashboard} />
-        <Route exact path="/chat" component={Chat} />
+        <Route exact path="/chat" component={ChatWrapper} />
         <Route exact path="/quiz">
           <QuestionCreatorProvider>
-            <QuizViewer />
+            <QuizViewer toggleQuizCreation={() => {}}/>
           </QuestionCreatorProvider>
         </Route>
       </UserProvider>
