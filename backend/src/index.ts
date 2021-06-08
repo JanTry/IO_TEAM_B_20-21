@@ -51,6 +51,8 @@ type ChatSocket = Socket & {
   sessionId: string;
 };
 
+const reactions = {};
+
 io.on('connection', (socket: ChatSocket) => {
   console.log('user connected');
 
@@ -70,6 +72,7 @@ io.on('connection', (socket: ChatSocket) => {
       });
       console.log(`User ${userId} joined room ${sessionId}`);
       logUserJoin(userId, sessionId);
+      io.in(socket.sessionId).emit('reactions', reactions[sessionId] || {});
     } else {
       callback({
         status: 'error',
@@ -87,6 +90,16 @@ io.on('connection', (socket: ChatSocket) => {
     QuizResponse.updateMany({ sessionId: socket.sessionId, quizId }, { $set: { isEnded: true } }, null, () =>
       socket.to(socket.sessionId).emit('end-quiz')
     );
+  });
+
+  socket.on('reaction', (reactionId) => {
+    console.log(`user ${socket.userId} reaction ${reactionId}`);
+    const sessionReactions = reactions[socket.sessionId] || {};
+    const reactionMap =  sessionReactions[reactionId] || {};
+    reactionMap[socket.userId] = new Date();
+    sessionReactions[reactionId] = reactionMap;
+    reactions[socket.sessionId] = sessionReactions;
+    io.in(socket.sessionId).emit('reactions', sessionReactions);
   });
 
   socket.on('disconnect', () => {

@@ -3,8 +3,10 @@ import { body, validationResult } from 'express-validator';
 import { Document } from 'mongoose';
 import { QuizResponse } from '../database/models/quizResponse';
 import { Quiz } from '../database/models/quiz';
-import { QuestionDto, QuizDto, QuizResponseDto } from './model';
+import { QuizDto, QuizResponseDto } from './model';
 import { quizIdValidator, sessionIdValidator } from './validators';
+import { getMaxPoints, getPoints, getQuestionMetadata, quizHistogram } from '../shared/quizHistogram';
+import { teacherMiddleware } from '../middleware/auth';
 
 export const quizResponseRoutes = express.Router();
 
@@ -35,15 +37,12 @@ quizResponseRoutes.post(
   }
 );
 
-const getQuestionMetadata = (questions: QuestionDto[]) => {
-  return questions.reduce((acc, current) => {
-    const questionData = {
-      points: current.points,
-      correctAnswers: current.answers.filter((a) => a.isCorrect).map((a) => a._id.toString()),
-    };
-    return { ...acc, [current._id.toString()]: questionData };
-  }, {} as Record<string, { points: number; correctAnswers: string[] }>);
-};
+quizResponseRoutes.get('/histogram/:quizId', teacherMiddleware, async (req, res) => {
+  if (res.statusCode === 401) return res;
+  const { quizId } = req.params;
+  const result = await quizHistogram(quizId);
+  res.send(result);
+});
 
 quizResponseRoutes.get('/points/:responseId', (req, res) => {
   const { responseId } = req.params;
@@ -58,17 +57,13 @@ quizResponseRoutes.get('/points/:responseId', (req, res) => {
         const { quizId, questionResponses } = result;
 
         Quiz.findOne({ _id: quizId }, null, null, (error, quiz: Document & QuizDto) => {
-          if (error) {
-            res.status(500).send(error);
-          }
+          if (error) res.status(500).send(error);
+
           const questionMetadata = getQuestionMetadata(quiz.questions);
+          const maxPoints = getMaxPoints(questionMetadata);
+          const points = getPoints(questionResponses, questionMetadata);
 
-          const points = questionResponses.reduce((acc, { questionId, answerId }) => {
-            const metadata = questionMetadata[questionId.toString()] ?? { points: 0, correctAnswers: [] };
-            return metadata.correctAnswers.find((a) => a === answerId.toString()) ? acc + metadata.points : acc;
-          }, 0);
-
-          res.status(200).send({ points });
+          res.status(200).send({ points, maxPoints });
         });
       } else {
         res.sendStatus(500);
