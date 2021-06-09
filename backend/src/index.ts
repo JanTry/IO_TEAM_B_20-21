@@ -71,8 +71,8 @@ io.on('connection', (socket: ChatSocket) => {
         msg: 'Success',
       });
       console.log(`User ${userId} joined room ${sessionId}`);
-      logUserJoin(userId, sessionId);
       io.in(socket.sessionId).emit('reactions', reactions[sessionId] || {});
+      logUserJoin(userId, sessionId);
     } else {
       callback({
         status: 'error',
@@ -104,8 +104,8 @@ io.on('connection', (socket: ChatSocket) => {
 
   socket.on('disconnect', () => {
     socket.leave(socket.id);
-    socket.leave(socket.sessionId);
     logUserLeave(socket.userId, socket.sessionId);
+    socket.leave(socket.sessionId);
     console.log(`user ${socket.userId} disconnected`);
   });
 });

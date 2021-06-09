@@ -18,12 +18,14 @@ import {
   Nav,
   OverlayTrigger,
   Tooltip,
+  Table,
 } from 'react-bootstrap';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Chart } from 'react-google-charts';
 import { useUser } from '../context/UserContext';
 import QuizViewer from './quizViewer/QuizViewer';
 import { getReactions, reactionIcons, Reaction, ReactionObject, reactionUsers } from './Reactions';
+import { Log, logsTable } from './Logs';
 
 const socket = io.connect(process.env.REACT_APP_BASE_URL!);
 
@@ -69,6 +71,9 @@ const Chat = () => {
   const [reactions, setReactions] = useState({} as ReactionObject);
   const reactionsData = useRef({});
   const expiryTime = parseInt(process.env.REACT_APP_REACTION_EXPIRY_TIME as string, 10);
+
+  const [isDisplayingLogs, setIsDisplayingLogs] = useState(false);
+  const [logs, setLogs] = useState([] as Log[]);
 
   const { user, username, sessionId, accessCode, sessionUrl } = useUser();
 
@@ -161,6 +166,19 @@ const Chat = () => {
     }
   }, [user, isCreatingQuiz]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/studentLog/${sessionId}`);
+      if (result.data) {
+        setLogs(result.data);
+      }
+    };
+
+    if (user && user.role === 'teacher') {
+      fetchData();
+    }
+  }, [user, isDisplayingLogs]);
+
   const handleMessageSubmition = (event: any) => {
     event.preventDefault();
 
@@ -222,11 +240,16 @@ const Chat = () => {
     setIsCreatingQuiz(!isCreatingQuiz);
   };
 
+  const handleDisplayingLogs = () => {
+    setIsDisplayingLogs(!isDisplayingLogs);
+  };
+
   const handleReaction = (reactionId: number) => {
     socket.emit('reaction', reactionId);
   };
 
   const handleLogout = () => {
+    socket.disconnect();
     sessionStorage.clear();
     history.push('/');
   };
@@ -238,6 +261,16 @@ const Chat = () => {
           <QuizViewer toggleQuizCreation={() => setIsCreatingQuiz(false)} />
           <Button className="m-4" variant="primary" onClick={handleQuizCreation} block>
             Cancel quiz creation
+          </Button>
+        </div>
+      );
+    }
+    if (isDisplayingLogs === true) {
+      return (
+        <div>
+          {logsTable(logs)}
+          <Button className="m-4" variant="primary" onClick={handleDisplayingLogs} block>
+            Back
           </Button>
         </div>
       );
@@ -285,6 +318,9 @@ const Chat = () => {
         </Button>
         <Button disabled={!quizId} className="m-4" variant="danger" onClick={handleQuizEnd} block>
           End quiz
+        </Button>
+        <Button disabled={!!quizId} className="m-4" variant="danger" onClick={handleDisplayingLogs} block>
+          Session logs
         </Button>
       </Container>
     );

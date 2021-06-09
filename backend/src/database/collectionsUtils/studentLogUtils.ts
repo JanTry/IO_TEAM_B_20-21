@@ -9,12 +9,16 @@ export const addStudentLog = async (logData) => {
 };
 
 export const logUserJoin = async (studentId, sessionId) => {
-  User.findOne({ _id: studentId, role: 'student' }, (err) => {
+  if(!sessionId || !studentId) return;
+  const names = studentId.split(" ");
+  User.findOne({ firstName: names[0], lastName: names[1], role: 'student' }, (err, user) => {
     if (err) {
       console.log(err);
-    } else {
+    } 
+    else if(user){
       addStudentLog({
-        studentId,
+        studentId: user._id,
+        studentName: studentId,
         sessionId,
         eventType: 'join',
       });
@@ -23,12 +27,16 @@ export const logUserJoin = async (studentId, sessionId) => {
 };
 
 export const logUserLeave = async (studentId, sessionId) => {
-  User.findOne({ _id: studentId, role: 'student' }, (err) => {
+  if(!sessionId || !studentId) return;
+  const names = studentId.split(" ");
+  User.findOne({ firstName: names[0], lastName: names[1], role: 'student' }, (err, user) => {
     if (err) {
       console.log(err);
-    } else {
+    } 
+    else if(user) {
       addStudentLog({
-        studentId,
+        studentId: user._id,
+        studentName: studentId,
         sessionId,
         eventType: 'leave',
       });
